@@ -9,6 +9,7 @@ GitHub 스타일의 블로그 활동 기록 위젯을 티스토리 블로그에 
 - 🎨 **정확한 GitHub 색상**으로 활동 수준 표시
 - 🔄 **24시간마다 자동 업데이트**로 최신 데이터 반영
 - 📱 **반응형 디자인**으로 모바일과 데스크톱 모두 지원
+- 🚀 **향상된 성능**과 **견고한 에러 처리**
 
 ## 📋 사전 준비사항
 
@@ -36,11 +37,11 @@ GitHub 스타일의 블로그 활동 기록 위젯을 티스토리 블로그에 
 원하는 위치에 다음 코드를 복사/붙여넣기:
 
 ```html
-<!-- Graden Widget 라이브러리 로드 -->
-<script src="https://cdn.jsdelivr.net/gh/username/tistory-blog-garden-widget@main/tistory-blog-garden-widget.js"></script>
+<!-- Graden Widget 라이브러리 로드 (v1.2.0) -->
+<script src="https://unpkg.com/blog-garden-widget@1.2.0/blog-garden-widget.js"></script>
 
 <!-- 위젯 컨테이너 -->
-<div data-tistory-blog-garden-widget
+<div data-graden-widget
      data-rss-url="https://your-blog-name.tistory.com/rss"
      data-title="블로그 활동 기록"
      data-show-legend="true"
@@ -72,11 +73,11 @@ data-rss-url="https://pearlluck.tistory.com/rss"
 HTML 위젯 편집 창에 다음 코드 입력:
 
 ```html
-<!-- Graden Widget 라이브러리 로드 -->
-<script src="https://cdn.jsdelivr.net/gh/username/tistory-blog-garden-widget@main/tistory-blog-garden-widget.js"></script>
+<!-- Graden Widget 라이브러리 로드 (v1.2.0) -->
+<script src="https://unpkg.com/blog-garden-widget@1.2.0/blog-garden-widget.js"></script>
 
 <!-- 위젯 컨테이너 -->
-<div data-tistory-blog-garden-widget
+<div data-graden-widget
      data-rss-url="https://your-blog-name.tistory.com/rss"
      data-title="블로그 활동 기록"
      data-show-legend="true"
@@ -93,217 +94,181 @@ HTML 위젯 편집 창에 다음 코드 입력:
 
 ### 기본 설정 (권장)
 ```html
-<div data-tistory-blog-garden-widget
+<div data-graden-widget
      data-rss-url="https://your-blog-name.tistory.com/rss"
      data-title="블로그 활동 기록"
      data-show-legend="true"
      data-show-footer="true">
-</div>
 ```
 
-### 모든 옵션 사용
+### 커스텀 제목 설정
 ```html
-<div data-tistory-blog-garden-widget
+<div data-graden-widget
      data-rss-url="https://your-blog-name.tistory.com/rss"
-     data-title="커스텀 제목"
+     data-title="내 개발 일지 활동"
+     data-show-legend="true"
+     data-show-footer="true">
+```
+
+### 업데이트 주기 조정 (밀리초 단위)
+```html
+<div data-graden-widget
+     data-rss-url="https://your-blog-name.tistory.com/rss"
+     data-title="블로그 활동 기록"
      data-update-interval="43200000"
      data-show-legend="true"
      data-show-footer="true">
-</div>
+```
+- `43200000`: 12시간마다 업데이트
+- `86400000`: 24시간마다 업데이트 (기본값)
+- `172800000`: 48시간마다 업데이트
+
+### 범례 및 푸터 숨기기
+```html
+<div data-graden-widget
+     data-rss-url="https://your-blog-name.tistory.com/rss"
+     data-title="블로그 활동 기록"
+     data-show-legend="false"
+     data-show-footer="false">
 ```
 
-### 옵션 설명
-| 속성 | 값 | 설명 |
-|------|-----|------|
-| `data-rss-url` | RSS URL | 블로그 RSS 피드 주소 (필수) |
-| `data-title` | 문자열 | 위젯 제목 (기본값: "활동 기록") |
-| `data-update-interval` | 밀리초 | 업데이트 주기 (기본값: 24시간) |
-| `data-show-legend` | true/false | 범례 표시 여부 (기본값: true) |
-| `data-show-footer` | true/false | 푸터 표시 여부 (기본값: true) |
+## 🎨 JavaScript로 고급 커스터마이징
 
-## 🎨 커스터마이징
-
-### 색상 변경
-기본 GitHub 스타일 색상을 사용하지만, 필요시 JavaScript로 변경 가능:
-
+### 프로그래밍 방식으로 위젯 생성
 ```html
+<!-- 위젯 컨테이너 -->
+<div id="my-blog-garden-widget"></div>
+
+<script src="https://unpkg.com/blog-garden-widget@1.2.0/blog-garden-widget.js"></script>
 <script>
-// 위젯 생성 후 색상 변경
-const widget = document.querySelector('[data-tistory-blog-garden-widget]')._GradenWidget;
-widget.setOptions({
+// 위젯 인스턴스 생성
+const widget = new GradenWidget('#my-blog-garden-widget', {
+    rssUrl: 'https://your-blog-name.tistory.com/rss',
+    title: '커스텀 제목',
+    updateInterval: 12 * 60 * 60 * 1000, // 12시간
+    showLegend: true,
+    showFooter: true,
     colors: {
-        0: '#f0f0f0',  // 활동 없음
-        1: '#c6e48b',  // 낮은 활동
-        2: '#7bc96f',  // 중간 활동
-        3: '#239a3b',  // 높은 활동
-        4: '#196127'   // 최고 활동
+        0: '#ebedef',  // 활동 없음
+        1: '#9be9a8',  // 낮은 활동
+        2: '#40c463',  // 중간 활동
+        3: '#30a14e',  // 높은 활동
+        4: '#216e39'   // 최고 활동
     }
 });
-</script>
-```
 
-### 제목 변경
-```html
-<script>
-const widget = document.querySelector('[data-tistory-blog-garden-widget]')._GradenWidget;
-widget.setOptions({
-    title: '새로운 제목'
+// 수동 업데이트
+widget.update().then(() => {
+    console.log('데이터 업데이트 완료');
 });
+
+// 옵션 변경
+widget.setOptions({
+    title: '새로운 제목',
+    showLegend: false
+});
+
+// 위젯 제거 (필요시)
+// widget.destroy();
 </script>
 ```
 
-## 🔍 문제 해결
+## 🔧 문제 해결
 
-### 문제 1: 위젯이 표시되지 않음
-**원인**: JavaScript 라이브러리 로드 실패
-**해결방법**:
-1. 브라우저 개발자 도구 (F12) 열기
-2. Console 탭에서 에러 메시지 확인
-3. 네트워크 연결 상태 확인
-4. CDN URL이 올바른지 확인
+### 1. 위젯이 표시되지 않는 경우
+- **브라우저 콘솔 확인**: F12 → Console 탭에서 오류 메시지 확인
+- **스크립트 로드 확인**: 네트워크 탭에서 스크립트 파일이 정상 로드되는지 확인
+- **RSS URL 유효성**: RSS 피드 URL이 정상적으로 접근 가능한지 확인
 
-### 문제 2: "활동 데이터를 불러올 수 없습니다" 메시지
-**원인**: RSS 피드 접근 실패
-**해결방법**:
-1. RSS URL이 올바른지 확인
-2. 블로그가 비공개 설정인지 확인
-3. RSS 피드가 활성화되어 있는지 확인
+### 2. CORS 오류가 발생하는 경우
+- **프록시 서버 사용**: 로컬 프록시 서버를 실행하여 CORS 문제 해결
+- **프록시 서버 설정**:
+  ```bash
+  npm install cors express node-fetch xml2js
+  node proxy-server.js
+  ```
 
-### 문제 3: 색상이 이상하게 표시됨
-**원인**: CSS 충돌
-**해결방법**:
-1. 블로그 테마와의 호환성 확인
-2. 다른 위젯과의 충돌 확인
-3. 브라우저 캐시 삭제
+### 3. 데이터가 업데이트되지 않는 경우
+- **RSS 피드 확인**: RSS 피드에 최신 게시물이 포함되어 있는지 확인
+- **업데이트 주기 확인**: `data-update-interval` 값이 적절한지 확인
+- **수동 업데이트**: `widget.update()` 메서드로 수동 업데이트 시도
 
-### 문제 4: 모바일에서 레이아웃 깨짐
-**원인**: 반응형 CSS 충돌
-**해결방법**:
-1. 블로그 테마의 모바일 설정 확인
-2. 위젯 위치 조정
-3. CSS 우선순위 확인
+### 4. 모바일에서 레이아웃이 깨지는 경우
+- **반응형 디자인**: 위젯은 자동으로 모바일에 최적화됨
+- **컨테이너 크기**: 부모 컨테이너의 너비가 충분한지 확인
+- **CSS 충돌**: 티스토리 기본 CSS와 충돌이 없는지 확인
 
 ## 📱 모바일 최적화
 
 ### 모바일에서의 표시
-- 위젯이 자동으로 모바일 크기에 맞춰 조정됩니다
-- 터치 인터페이스에 최적화되어 있습니다
-- 작은 화면에서도 가독성이 좋습니다
+- **자동 반응형**: 모바일 화면에 맞춰 자동으로 크기 조정
+- **터치 친화적**: 모바일 터치 인터페이스에 최적화
+- **성능 최적화**: 모바일 디바이스에서의 렌더링 성능 향상
 
 ### 모바일 전용 설정
 ```html
-<!-- 모바일에서만 표시 -->
-<div data-tistory-blog-garden-widget
+<div data-graden-widget
      data-rss-url="https://your-blog-name.tistory.com/rss"
-     data-title="모바일 활동 기록"
-     class="mobile-only">
-</div>
-
-<style>
-@media (min-width: 768px) {
-    .mobile-only { display: none; }
-}
-</style>
+     data-title="모바일 최적화 위젯"
+     data-show-legend="true"
+     data-show-footer="false">
 ```
 
-## 🔄 업데이트 및 유지보수
+## 🚀 성능 최적화 팁
 
-### 자동 업데이트
-- 위젯은 **24시간마다 자동으로** RSS 데이터를 업데이트합니다
-- 별도의 설정이나 관리가 필요하지 않습니다
+### 1. 업데이트 주기 최적화
+- **활성 블로그**: 24시간마다 업데이트 (기본값)
+- **비활성 블로그**: 48시간 또는 72시간마다 업데이트
+- **테스트 환경**: 1시간마다 업데이트
 
-### 수동 업데이트
-필요시 수동으로 데이터를 업데이트할 수 있습니다:
-```javascript
-const widget = document.querySelector('[data-tistory-blog-garden-widget]')._GradenWidget;
-widget.update().then(() => {
-    console.log('데이터 업데이트 완료');
-});
-```
+### 2. 메모리 관리
+- **위젯 제거**: 페이지를 벗어날 때 `widget.destroy()` 호출
+- **이벤트 리스너**: 자동으로 정리되므로 별도 관리 불필요
 
-### 위젯 제거
-위젯을 완전히 제거하려면:
-```javascript
-const widget = document.querySelector('[data-tistory-blog-garden-widget]')._GradenWidget;
-widget.destroy();
-```
+### 3. 네트워크 최적화
+- **CDN 사용**: unpkg CDN으로 빠른 스크립트 로드
+- **캐싱**: 브라우저 자동 캐싱 활용
 
-## 📊 성능 최적화
+## 🔄 버전 업데이트
 
-### 로딩 최적화
-- 위젯은 **비동기적으로** 로드되어 페이지 로딩 속도에 영향을 주지 않습니다
-- CSS와 JavaScript가 자동으로 최적화됩니다
-
-### 메모리 관리
-- 위젯은 **메모리 누수 없이** 동작합니다
-- 페이지 이동 시 자동으로 리소스를 정리합니다
-
-## 🌟 추가 팁
-
-### 1. 여러 위젯 동시 사용
+### 최신 버전으로 업데이트
 ```html
-<!-- 첫 번째 위젯 -->
-<div data-tistory-blog-garden-widget
-     data-rss-url="https://blog1.tistory.com/rss"
-     data-title="블로그 1 활동">
-</div>
+<!-- 최신 버전 (자동) -->
+<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"></script>
 
-<!-- 두 번째 위젯 -->
-<div data-tistory-blog-garden-widget
-     data-rss-url="https://blog2.tistory.com/rss"
-     data-title="블로그 2 활동">
-</div>
+<!-- 특정 버전 고정 (권장) -->
+<script src="https://unpkg.com/blog-garden-widget@1.2.0/blog-garden-widget.js"></script>
 ```
 
-### 2. 특정 페이지에서만 표시
-```html
-<!-- 메인 페이지에서만 표시 -->
-<script>
-if (window.location.pathname === '/') {
-    // 위젯 코드
-}
-</script>
-```
-
-### 3. 계절별 테마 적용
-```html
-<script>
-const month = new Date().getMonth();
-let theme = 'default';
-
-if (month >= 2 && month <= 4) theme = 'spring';
-else if (month >= 5 && month <= 7) theme = 'summer';
-else if (month >= 8 && month <= 10) theme = 'autumn';
-else theme = 'winter';
-
-// 테마에 따른 색상 적용
-</script>
-```
+### 버전별 주요 변경사항
+- **v1.2.0**: 3개월 위젯(사이드용), 1년 위젯 구분
+- **v1.1.0**: 프록시 서버 추가, RSS 분석 기능
+- **v1.0.0**: 기본 기능 구현
 
 ## 📞 지원 및 문의
 
-### 문제 발생 시
-1. **브라우저 개발자 도구**에서 에러 메시지 확인
-2. **Console 탭**에서 로그 메시지 확인
-3. **Network 탭**에서 API 호출 상태 확인
+### 공식 저장소
+- **GitHub**: [blog-garden-widget](https://github.com/vvspearlvvs/blog-garden-widget)
+- **npm**: [blog-garden-widget](https://www.npmjs.com/package/blog-garden-widget)
 
-### 추가 도움
-- GitHub Issues: [이슈 등록](https://github.com/username/tistory-blog-garden-widget/issues)
-- 이메일: your-email@example.com
+### 문제 리포트
+- **Issues**: GitHub 저장소의 Issues 탭에서 버그 리포트
+- **Discussions**: 기능 제안 및 질문
 
-## 🎉 완성!
-
-이제 티스토리 블로그에 GitHub 스타일의 활동 기록 위젯이 완벽하게 적용되었습니다!
-
-**주요 장점:**
-- ✅ **한 번 설정으로 영구 사용**
-- ✅ **24시간 자동 업데이트**
-- ✅ **GitHub와 동일한 시각적 효과**
-- ✅ **모바일과 데스크톱 모두 지원**
-- ✅ **한국어 완벽 지원**
-
-위젯이 정상적으로 작동하는지 확인하고, 블로그 방문자들에게 멋진 활동 기록을 보여주세요! 🚀
+### 커뮤니티
+- **티스토리 블로그**: [pearlluck.tistory.com](https://pearlluck.tistory.com)
+- **개발자 블로그**: 개발 관련 팁과 트릭 공유
 
 ---
 
-**참고**: 위젯 적용 후 문제가 발생하거나 추가 설정이 필요하시면 언제든지 문의해주세요. 
+## 📝 적용 체크리스트
+
+- [ ] RSS 피드 URL 확인 및 테스트
+- [ ] HTML 편집기 또는 사이드바에 위젯 코드 삽입
+- [ ] RSS URL을 실제 블로그 URL로 수정
+- [ ] 저장 후 블로그에서 위젯 표시 확인
+- [ ] 모바일에서 레이아웃 확인
+- [ ] 자동 업데이트 동작 확인
+- [ ] 문제 발생 시 브라우저 콘솔 확인
+
+**🎉 축하합니다! 이제 티스토리 블로그에 GitHub 스타일의 활동 기록 위젯이 성공적으로 적용되었습니다!** 

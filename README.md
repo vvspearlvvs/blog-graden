@@ -11,13 +11,16 @@ GitHub 스타일의 티스토리 블로그 활동 기록 시각화 위젯입니�
 - 🌏 **한국어 지원**: 한국어 날짜 형식과 메시지
 - ⚙️ **완전 커스터마이징**: 제목, 색상, 업데이트 주기 등 설정 가능
 - 🧹 **메모리 관리**: destroy() 메서드로 리소스 정리
+- 🚀 **로컬 프록시 서버**: CORS 문제 해결을 위한 로컬 프록시 서버 제공
+- 🔧 **향상된 성능**: 서버 사이드 RSS 파싱으로 클라이언트 부담 감소
+- 📊 **다양한 RSS 형식**: RSS, Atom 피드 모두 지원
 
 ## 🚀 빠른 시작
 
 ### 1. 스크립트 로드
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/username/tistory-blog-garden-widget@main/tistory-blog-garden-widget.js"></script>
+<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"></script>
 ```
 
 ### 2. HTML 컨테이너 생성
@@ -34,6 +37,34 @@ const widget = new GradenWidget('#my-tistory-blog-garden-widget', {
     title: '내 블로그 활동'
 });
 ```
+
+## 🔧 프록시 서버 설정 (v1.1.0+)
+
+CORS 문제를 해결하기 위해 로컬 프록시 서버를 제공합니다.
+
+### 프록시 서버 실행
+
+```bash
+# 의존성 설치
+npm install cors express node-fetch xml2js
+
+# 프록시 서버 실행
+node proxy-server.js
+```
+
+### 프록시 서버 엔드포인트
+
+- **RSS 분석**: `http://localhost:3001/analyze/rss?url=RSS_URL`
+- **원본 RSS**: `http://localhost:3001/proxy/rss?url=RSS_URL`
+- **헬스체크**: `http://localhost:3001/health`
+
+### 프록시 서버 기능
+
+- RSS 피드 자동 파싱
+- 날짜별 게시물 수 계산
+- CORS 문제 해결
+- 다양한 RSS 형식 지원 (RSS, Atom)
+- 에러 핸들링 및 로깅
 
 ## 📖 사용법
 
@@ -72,7 +103,7 @@ const widget = new GradenWidget('#container', {
 ### HTML 속성으로 자동 초기화
 
 ```html
-<div data-tistory-blog-garden-widget
+<div data-graden-widget
      data-rss-url="https://pearlluck.tistory.com/rss"
      data-title="자동 초기화 위젯"
      data-update-interval="86400000"
@@ -120,21 +151,26 @@ widget.setOptions({
 });
 ```
 
-## 🌐 CDN 배포
-
-### GitHub Pages
-```html
-<script src="https://username.github.io/repo-name/tistory-blog-garden-widget.js"></script>
-```
-
-### jsDelivr
-```html
-<script src="https://cdn.jsdelivr.net/gh/username/repo-name@main/tistory-blog-garden-widget.js"></script>
-```
+## 🌐 npm 패키지 배포
 
 ### unpkg (npm 패키지 배포 후)
+```bash
+npm login  # npm 로그인
+npm publish --dry-run  # 퍼블리시 전 검증
+npm pack  # 패키지에 포함될 파일 확인
+npm publish  # 배포
+```
+
+## 🌐 CDN 배포
+
+### unpkg (최신 버전 자동 추적)
 ```html
-<script src="https://unpkg.com/tistory-blog-garden-widget@1.0.0/tistory-blog-garden-widget.js"></script>
+<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"></script>
+```
+
+### unpkg 권장방식 (특정 버전 고정)
+```html
+<script src="https://unpkg.com/blog-garden-widget@1.2.0/blog-garden-widget.js"></script>
 ```
 
 ## 📱 티스토리 블로그에 삽입
@@ -169,8 +205,21 @@ colors: {
 - Safari 12+
 - Edge 79+
 
-
 ## 📈 버전 히스토리
+
+### v1.2.0
+- 🚀 **성능 최적화**: 메모리 사용량 개선 및 렌더링 성능 향상
+- 🔧 **에러 핸들링 강화**: 네트워크 오류 및 RSS 파싱 오류에 대한 견고한 처리
+- 📱 **반응형 개선**: 모바일 디바이스에서의 사용성 향상
+- 🎨 **UI/UX 개선**: 더 나은 시각적 피드백과 사용자 경험
+- 📊 **데이터 처리 개선**: RSS 피드 파싱 정확도 향상
+
+### v1.1.0
+- 🚀 **로컬 프록시 서버 추가**: CORS 문제 해결을 위한 프록시 서버 제공
+- 📊 **RSS 분석 엔드포인트**: 날짜별 게시물 수 자동 계산
+- 🔧 **성능 최적화**: 서버 사이드 RSS 파싱으로 클라이언트 부담 감소
+- 🌐 **다양한 RSS 형식 지원**: RSS, Atom 피드 모두 지원
+- 📝 **프록시 서버 문서화**: 상세한 설정 및 사용법 제공
 
 ### v1.0.0
 - 초기 릴리스
@@ -178,5 +227,19 @@ colors: {
 - RSS 피드 자동 파싱
 - 24시간 자동 업데이트
 - 완전한 커스터마이징 옵션
+
+## 🤝 기여하기
+
+버그 리포트, 기능 제안, 풀 리퀘스트를 환영합니다!
+
+1. 이 저장소를 포크하세요
+2. 새로운 기능 브랜치를 생성하세요 (`git checkout -b feature/amazing-feature`)
+3. 변경사항을 커밋하세요 (`git commit -m 'Add some amazing feature'`)
+4. 브랜치에 푸시하세요 (`git push origin feature/amazing-feature`)
+5. Pull Request를 생성하세요
+
+## 📄 라이선스
+
+이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
 
 ---

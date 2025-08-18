@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Widget CDN 테스트</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f6f8fa;
+            margin: 0;
+            padding: 24px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+        }
+        
+        h1 {
+            color: #24292f;
+            margin-bottom: 8px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #656d76;
+            margin-bottom: 32px;
+            font-size: 16px;
+        }
+        
+        .test-section {
+            margin-bottom: 40px;
+            padding: 24px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            background: #fafbfc;
+        }
+        
+        .test-section h2 {
+            color: #24292f;
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+        
+        .widget-container {
+            border: 2px dashed #d0d7de;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 200px;
+            background: white;
+            margin: 16px 0;
+        }
+        
+        .code-block {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            overflow-x: auto;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 14px;
+        }
+        
+        .status {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 16px 0;
+            font-weight: 500;
+        }
+        
+        .status.success {
+            background: #dafbe1;
+            color: #1a7f37;
+            border: 1px solid #4ac26b;
+        }
+        
+        .status.error {
+            background: #ffebe9;
+            color: #cf222e;
+            border: 1px solid #ff8182;
+        }
+        
+        .status.info {
+            background: #f1f8ff;
+            color: #0969da;
+            border: 1px solid #79c0ff;
+        }
+        
+        .test-buttons {
+            margin: 16px 0;
+        }
+        
+        .test-buttons button {
+            background: #0969da;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        
+        .test-buttons button:hover {
+            background: #0858b9;
+        }
+        
+        .test-buttons button:disabled {
+            background: #656d76;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Activity Widget CDN 테스트</h1>
+        <div class="subtitle">
+            npm 배포 후 unpkg CDN을 통해 위젯이 정상 작동하는지 확인하는 테스트 페이지입니다.
+        </div>
+
+        <!-- CDN 로드 상태 확인 -->
+        <div class="test-section">
+            <h2>📡 CDN 로드 상태</h2>
+            <div id="cdn-status" class="status info">
+                CDN 로드 상태를 확인 중...
+            </div>
+            <div class="code-block">
+&lt;script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"&gt;&lt;/script&gt;
+            </div>
+        </div>
+
+        <!-- 기본 위젯 테스트 -->
+        <div class="test-section">
+            <h2>🔧 기본 위젯 테스트</h2>
+            <div class="widget-container">
+                <div
+                    id="basic-widget"
+                    data-graden-widget
+                    data-rss-url="https://pearlluck.tistory.com/rss"
+                    data-title="기본 위젯 테스트"
+                    data-show-legend="true"
+                    data-show-footer="true">
+                </div>
+            </div>
+            <div class="code-block">
+&lt;div data-graden-widget
+     data-rss-url="https://pearlluck.tistory.com/rss"
+     data-title="기본 위젯 테스트"
+     data-show-legend="true"
+     data-show-footer="true"&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- 프로그래밍 방식 테스트 -->
+        <div class="test-section">
+            <h2>⚙️ 프로그래밍 방식 테스트</h2>
+            <div class="widget-container">
+                <div id="programmatic-widget"></div>
+            </div>
+            <div class="test-buttons">
+                <button onclick="createWidget()">위젯 생성</button>
+                <button onclick="updateWidget()" id="update-btn" disabled>데이터 업데이트</button>
+                <button onclick="changeTitle()" id="change-btn" disabled>제목 변경</button>
+                <button onclick="destroyWidget()" id="destroy-btn" disabled>위젯 제거</button>
+            </div>
+            <div class="code-block">
+// 위젯 생성
+const widget = new GradenWidget('#programmatic-widget', {
+    rssUrl: 'https://pearlluck.tistory.com/rss',
+    title: '프로그래밍 위젯'
+});
+
+// 데이터 업데이트
+widget.update();
+
+// 제목 변경
+widget.setOptions({ title: '새로운 제목' });
+
+// 위젯 제거
+widget.destroy();
+            </div>
+        </div>
+
+        <!-- 커스텀 설정 테스트 -->
+        <div class="test-section">
+            <h2>🎨 커스텀 설정 테스트</h2>
+            <div class="widget-container">
+                <div
+                    id="custom-widget"
+                    data-graden-widget
+                    data-rss-url="https://pearlluck.tistory.com/rss"
+                    data-title="커스텀 위젯"
+                    data-update-interval="43200000"
+                    data-show-legend="true"
+                    data-show-footer="true">
+                </div>
+            </div>
+            <div class="code-block">
+&lt;div data-graden-widget
+     data-rss-url="https://pearlluck.tistory.com/rss"
+     data-title="커스텀 위젯"
+     data-update-interval="43200000"
+     data-show-legend="true"
+     data-show-footer="true"&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- 1년 버전 위젯 테스트 -->
+        <div class="test-section">
+            <h2>📅 1년 버전 위젯 테스트</h2>
+            <div class="widget-container">
+                <div
+                    id="yearly-widget"
+                    data-graden-widget-1y
+                    data-rss-url="https://pearlluck.tistory.com/rss"
+                    data-title="1년 활동 기록"
+                    data-show-legend="true"
+                    data-show-footer="true">
+                </div>
+            </div>
+            <div class="code-block">
+&lt;div data-graden-widget-1y
+     data-rss-url="https://pearlluck.tistory.com/rss"
+     data-title="1년 활동 기록"
+     data-show-legend="true"
+     data-show-footer="true"&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- 테스트 결과 -->
+        <div class="test-section">
+            <h2>📊 테스트 결과</h2>
+            <div id="test-results" class="status info">
+                테스트를 진행하면 결과가 여기에 표시됩니다.
+            </div>
+        </div>
+
+        <!-- RSS 분석 테스트 -->
+        <div class="test-section">
+            <h2>🔍 RSS 분석 테스트 (프록시 서버)</h2>
+            <div class="test-buttons">
+                <button onclick="testRssAnalysis()">RSS 분석 테스트</button>
+                <button onclick="testProxyServer()">프록시 서버 상태 확인</button>
+            </div>
+            <div id="rss-analysis-result" class="status info">
+                RSS 분석 결과가 여기에 표시됩니다.
+            </div>
+            <div class="code-block">
+// 프록시 서버를 통한 RSS 분석
+const rssUrl = 'https://pearlluck.tistory.com/rss';
+fetch(`http://localhost:3001/analyze/rss?url=${encodeURIComponent(rssUrl)}`)
+  .then(response => response.json())
+  .then(data => console.log('날짜별 게시물 수:', data));
+            </div>
+        </div>
+    </div>
+
+    <!-- 로컬에서 Activity Widget 로드 (변경사항 테스트용) -->
+    <script src="blog-garden-widget.js?v=20250818"></script>
+    <script src="blog-garden-widget-1y.js?v=20250818"></script>
+    
+    <script>
+        // 스크립트 로딩 상태 확인
+        console.log('3개월 버전 위젯 로드 상태:', typeof GradenWidget !== 'undefined' ? '성공' : '실패');
+        console.log('1년 버전 위젯 로드 상태:', typeof GradenWidget1Y !== 'undefined' ? '성공' : '실패');
+        
+        let programmaticWidget = null;
+        
+        // CDN 로드 상태 확인
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                if (typeof GradenWidget !== 'undefined') {
+                    document.getElementById('cdn-status').className = 'status success';
+                    document.getElementById('cdn-status').textContent = '✅ CDN 로드 성공! GradenWidget 클래스를 사용할 수 있습니다.';
+                    updateTestResults('CDN 로드', '성공');
+                } else {
+                    document.getElementById('cdn-status').className = 'status error';
+                    document.getElementById('cdn-status').textContent = '❌ CDN 로드 실패! GradenWidget 클래스를 찾을 수 없습니다.';
+                    updateTestResults('CDN 로드', '실패');
+                }
+            }, 2000);
+        });
+
+        // 프로그래밍 방식 위젯 테스트
+        function createWidget() {
+            try {
+                if (typeof GradenWidget === 'undefined') {
+                    alert('GradenWidget 클래스를 찾을 수 없습니다. CDN 로드를 확인해주세요.');
+                    return;
+                }
+                
+                programmaticWidget = new GradenWidget('#programmatic-widget', {
+                    rssUrl: 'https://pearlluck.tistory.com/rss',
+                    title: '프로그래밍 위젯'
+                });
+                
+                document.getElementById('update-btn').disabled = false;
+                document.getElementById('change-btn').disabled = false;
+                document.getElementById('destroy-btn').disabled = false;
+                
+                updateTestResults('위젯 생성', '성공');
+            } catch (error) {
+                updateTestResults('위젯 생성', '실패: ' + error.message);
+            }
+        }
+
+        function updateWidget() {
+            if (programmaticWidget) {
+                programmaticWidget.update().then(() => {
+                    updateTestResults('데이터 업데이트', '성공');
+                }).catch(error => {
+                    updateTestResults('데이터 업데이트', '실패: ' + error.message);
+                });
+            }
+        }
+
+        function changeTitle() {
+            if (programmaticWidget) {
+                programmaticWidget.setOptions({
+                    title: '제목이 변경되었습니다! (' + new Date().toLocaleTimeString() + ')'
+                });
+                updateTestResults('제목 변경', '성공');
+            }
+        }
+
+        function destroyWidget() {
+            if (programmaticWidget) {
+                programmaticWidget.destroy();
+                programmaticWidget = null;
+                
+                document.getElementById('programmatic-widget').innerHTML = 
+                    '<p style="text-align: center; color: #666;">위젯이 제거되었습니다.</p>';
+                
+                document.getElementById('update-btn').disabled = true;
+                document.getElementById('change-btn').disabled = true;
+                document.getElementById('destroy-btn').disabled = true;
+                
+                updateTestResults('위젯 제거', '성공');
+            }
+        }
+
+        function updateTestResults(test, result) {
+            const resultsDiv = document.getElementById('test-results');
+            const timestamp = new Date().toLocaleTimeString();
+            const newResult = `[${timestamp}] ${test}: ${result}`;
+            
+            if (resultsDiv.textContent.includes('테스트를 진행하면')) {
+                resultsDiv.innerHTML = newResult;
+            } else {
+                resultsDiv.innerHTML += '<br>' + newResult;
+            }
+        }
+
+        // 자동 테스트 실행
+        setTimeout(() => {
+            if (typeof GradenWidget !== 'undefined') {
+                updateTestResults('자동 테스트', 'GradenWidget 클래스 로드 확인됨');
+            }
+        }, 3000);
+
+        // 두 버전 위젯 자동 초기화
+        function initializeWidgets() {
+            console.log('위젯 초기화 시작...');
+            console.log('GradenWidget 클래스 상태:', typeof GradenWidget);
+            console.log('GradenWidget1Y 클래스 상태:', typeof GradenWidget1Y);
+            
+            // 3개월 버전 위젯 초기화
+            const threeMonthWidgets = document.querySelectorAll('[data-graden-widget]');
+            console.log('3개월 버전 위젯 개수:', threeMonthWidgets.length);
+            threeMonthWidgets.forEach(container => {
+                if (typeof GradenWidget !== 'undefined') {
+                    const options = {
+                        rssUrl: container.getAttribute('data-rss-url') || 'https://pearlluck.tistory.com/rss',
+                        title: container.getAttribute('data-title') || '3개월 활동 기록',
+                        updateInterval: parseInt(container.getAttribute('data-update-interval')) || 86400000,
+                        showLegend: container.getAttribute('data-show-legend') !== 'false',
+                        showFooter: container.getAttribute('data-show-footer') !== 'false'
+                    };
+                    
+                    new GradenWidget(container, options);
+                    updateTestResults('3개월 버전 위젯 초기화', '성공');
+                } else {
+                    console.error('GradenWidget 클래스를 찾을 수 없습니다.');
+                    updateTestResults('3개월 버전 위젯 초기화', '실패: GradenWidget 클래스 없음');
+                }
+            });
+
+            // 1년 버전 위젯 초기화
+            const yearlyWidgets = document.querySelectorAll('[data-graden-widget-1y]');
+            console.log('1년 버전 위젯 개수:', yearlyWidgets.length);
+            yearlyWidgets.forEach(container => {
+                console.log('1년 버전 위젯 컨테이너:', container);
+                if (typeof GradenWidget1Y !== 'undefined') {
+                    console.log('GradenWidget1Y 클래스 발견');
+                    const options = {
+                        rssUrl: container.getAttribute('data-rss-url') || 'https://pearlluck.tistory.com/rss',
+                        title: container.getAttribute('data-title') || '1년 활동 기록',
+                        updateInterval: parseInt(container.getAttribute('data-update-interval')) || 86400000,
+                        showLegend: container.getAttribute('data-show-legend') !== 'false',
+                        showFooter: container.getAttribute('data-show-footer') !== 'false'
+                    };
+                    
+                    console.log('1년 버전 위젯 옵션:', options);
+                    new GradenWidget1Y(container, options);
+                    updateTestResults('1년 버전 위젯 초기화', '성공');
+                } else {
+                    console.error('GradenWidget1Y 클래스를 찾을 수 없습니다.');
+                    updateTestResults('1년 버전 위젯 초기화', '실패: GradenWidget1Y 클래스 없음');
+                }
+            });
+        }
+
+        // 스크립트 로딩 상태를 지속적으로 확인하고 위젯 초기화
+        function checkAndInitialize() {
+            if (typeof GradenWidget !== 'undefined' && typeof GradenWidget1Y !== 'undefined') {
+                console.log('모든 위젯 클래스가 로드되었습니다. 초기화를 시작합니다.');
+                initializeWidgets();
+            } else {
+                console.log('일부 위젯 클래스가 아직 로드되지 않았습니다. 1초 후 다시 시도합니다.');
+                setTimeout(checkAndInitialize, 1000);
+            }
+        }
+
+        // 페이지 로드 후 위젯 초기화
+        window.addEventListener('load', function() {
+            console.log('페이지 로드 완료. 위젯 클래스 확인 중...');
+            setTimeout(checkAndInitialize, 1000);
+        });
+
+        // RSS 분석 테스트 함수들
+        async function testRssAnalysis() {
+            const resultDiv = document.getElementById('rss-analysis-result');
+            resultDiv.className = 'status info';
+            resultDiv.textContent = 'RSS 분석 중...';
+            
+            try {
+                const rssUrl = 'https://pearlluck.tistory.com/rss';
+                const response = await fetch(`http://localhost:3001/analyze/rss?url=${encodeURIComponent(rssUrl)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const dateCounts = await response.json();
+                
+                resultDiv.className = 'status success';
+                resultDiv.innerHTML = `
+                    <strong>✅ RSS 분석 성공!</strong><br>
+                    <strong>URL:</strong> ${rssUrl}<br>
+                    <strong>날짜별 게시물 수:</strong><br>
+                    <pre style="background: white; padding: 8px; border-radius: 4px; margin-top: 8px;">${JSON.stringify(dateCounts, null, 2)}</pre>
+                `;
+                
+                updateTestResults('RSS 분석', '성공');
+            } catch (error) {
+                resultDiv.className = 'status error';
+                resultDiv.innerHTML = `
+                    <strong>❌ RSS 분석 실패!</strong><br>
+                    <strong>에러:</strong> ${error.message}<br>
+                    <strong>프록시 서버가 실행 중인지 확인해주세요.</strong>
+                `;
+                
+                updateTestResults('RSS 분석', '실패: ' + error.message);
+            }
+        }
+
+        async function testProxyServer() {
+            const resultDiv = document.getElementById('rss-analysis-result');
+            resultDiv.className = 'status info';
+            resultDiv.textContent = '프록시 서버 상태 확인 중...';
+            
+            try {
+                const response = await fetch('http://localhost:3001/health');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const health = await response.json();
+                
+                resultDiv.className = 'status success';
+                resultDiv.innerHTML = `
+                    <strong>✅ 프록시 서버 정상 작동!</strong><br>
+                    <strong>상태:</strong> ${health.status}<br>
+                    <strong>시간:</strong> ${new Date(health.timestamp).toLocaleString()}
+                `;
+                
+                updateTestResults('프록시 서버 상태', '정상');
+            } catch (error) {
+                resultDiv.className = 'status error';
+                resultDiv.innerHTML = `
+                    <strong>❌ 프록시 서버 연결 실패!</strong><br>
+                    <strong>에러:</strong> ${error.message}<br>
+                    <strong>프록시 서버를 실행해주세요: node proxy-server.js</strong>
+                `;
+                
+                updateTestResults('프록시 서버 상태', '실패: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html> 

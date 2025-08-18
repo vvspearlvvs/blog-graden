@@ -10,21 +10,23 @@
 
     // CSS 스타일 동적 추가
     function injectStyles() {
-        const styleId = 'tistory-blog-garden-widget-styles';
+        const styleId = 'graden-widget-styles';
         if (document.getElementById(styleId)) return;
 
         const style = document.createElement('style');
         style.id = styleId;
         style.textContent = `
-            .tistory-blog-garden-widget {
+            .graden-widget {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
-                max-width: 100%;
+                width: 250px;
+                max-width: 250px;
                 padding: 20px;
-                background: #ffffff;
+                background: #555;
                 border-radius: 8px;
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
                 margin: 20px 0;
                 box-sizing: border-box;
+                overflow: hidden;
             }
 
             .activity-header {
@@ -37,7 +39,7 @@
             .activity-title {
                 font-size: 18px;
                 font-weight: 600;
-                color: #24292f;
+                color: #ffffff;
                 margin: 0;
             }
 
@@ -46,7 +48,7 @@
                 align-items: center;
                 gap: 8px;
                 font-size: 12px;
-                color: #656d76;
+                color: #e1e4e8;
             }
 
             .legend-item {
@@ -70,12 +72,18 @@
                 display: flex;
                 gap: 4px;
                 margin-bottom: 16px;
+                overflow: hidden;
+                width: 210px;
+                max-width: 210px;
             }
 
             .week-column {
                 display: flex;
                 flex-direction: column;
                 gap: 4px;
+                flex-shrink: 0;
+                min-width: 0;
+                width: 14px;
             }
 
             .day-cell {
@@ -85,6 +93,9 @@
                 cursor: pointer;
                 transition: transform 0.1s ease;
                 position: relative;
+                flex-shrink: 0;
+                min-width: 0;
+                max-width: 12px;
             }
 
             .day-cell:hover {
@@ -132,13 +143,13 @@
             .activity-footer {
                 text-align: center;
                 font-size: 11px;
-                color: #656d76;
+                color: #ffffff;
             }
 
             .loading {
                 text-align: center;
                 padding: 40px 20px;
-                color: #656d76;
+                color: #ffffff;
             }
 
             .error {
@@ -211,7 +222,7 @@
 
         render() {
             this.container.innerHTML = `
-                <div class="tistory-blog-garden-widget">
+                <div class="graden-widget">
                     <div class="activity-header">
                         <h3 class="activity-title">${this.options.title}</h3>
                         ${this.options.showLegend ? `
@@ -231,13 +242,13 @@
                         ` : ''}
                     </div>
                     
-                    <div id="activity-grid-${this.container.id || 'default'}" class="activity-grid">
+                    <div id="graden-widget-grid-${this.container.id || 'default'}" class="activity-grid">
                         <div class="loading">활동 데이터를 불러오는 중...</div>
                     </div>
                     
                     ${this.options.showFooter ? `
                         <div class="activity-footer">
-                            최근 1년간의 활동을 보여줍니다
+                            최근 3개월간의 활동을 보여줍니다
                         </div>
                     ` : ''}
                 </div>
@@ -246,33 +257,61 @@
 
         async fetchActivityData() {
             try {
-                // CORS 우회를 위해 프록시 서비스 사용
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(this.options.rssUrl)}`;
-                const response = await fetch(proxyUrl);
+                // 로컬 프록시 서버 사용 (가장 안정적)
+                let dateCounts = null;
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                const rssText = result.contents;
-                
-                // RSS 파싱
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(rssText, 'text/xml');
-                
-                // 날짜별 게시물 수 계산
-                const dateCounts = {};
-                const items = xmlDoc.querySelectorAll('item');
-                
-                items.forEach(item => {
-                    const pubDate = item.querySelector('pubDate');
-                    if (pubDate && pubDate.textContent) {
-                        const date = new Date(pubDate.textContent);
-                        const dateString = date.toISOString().split('T')[0];
-                        dateCounts[dateString] = (dateCounts[dateString] || 0) + 1;
+                // 방법 1: 로컬 프록시 서버의 분석 엔드포인트 시도
+                try {
+                    const analyzeUrl = `http://localhost:3001/analyze/rss?url=${encodeURIComponent(this.options.rssUrl)}`;
+                    const response = await fetch(analyzeUrl);
+                    
+                    if (response.ok) {
+                        dateCounts = await response.json();
+                        console.log('로컬 프록시 서버로 RSS 분석 성공');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
-                });
+                } catch (error) {
+                    console.log('로컬 프록시 서버 실패, allorigins.win 시도:', error.message);
+                }
+                
+                // 방법 2: allorigins.win 시도 (백업)
+                if (!dateCounts) {
+                    try {
+                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(this.options.rssUrl)}`;
+                        const response = await fetch(proxyUrl);
+                        
+                        if (response.ok) {
+                            const result = await response.json();
+                            const rssText = result.contents;
+                            
+                            // RSS 파싱
+                            const parser = new DOMParser();
+                            const xmlDoc = parser.parseFromString(rssText, 'text/xml');
+                            
+                            // 날짜별 게시물 수 계산
+                            dateCounts = {};
+                            const items = xmlDoc.querySelectorAll('item');
+                            
+                            items.forEach(item => {
+                                const pubDate = item.querySelector('pubDate');
+                                if (pubDate && pubDate.textContent) {
+                                    const date = new Date(pubDate.textContent);
+                                    const dateString = date.toISOString().split('T')[0];
+                                    dateCounts[dateString] = (dateCounts[dateString] || 0) + 1;
+                                }
+                            });
+                            
+                            console.log('allorigins.win 프록시로 RSS 로드 성공');
+                        }
+                    } catch (error) {
+                        console.log('allorigins.win 프록시 실패:', error.message);
+                    }
+                }
+                
+                if (!dateCounts) {
+                    throw new Error('프록시 서비스가 실패했습니다. 로컬 프록시 서버가 실행 중인지 확인하세요.');
+                }
 
                 this.data = dateCounts;
                 this.maxCount = Math.max(...Object.values(this.data), 1);
@@ -280,19 +319,24 @@
                 console.log('RSS 데이터 로드 완료:', new Date().toLocaleString('ko-KR'));
             } catch (error) {
                 console.error('RSS 데이터 로드 실패:', error);
+                console.error('에러 상세 정보:', {
+                    message: error.message,
+                    stack: error.stack,
+                    rssUrl: this.options.rssUrl
+                });
                 throw error;
             }
         }
 
         generateGrid() {
-            const gridContainer = document.getElementById(`activity-grid-${this.container.id || 'default'}`);
+            const gridContainer = document.getElementById(`graden-widget-grid-${this.container.id || 'default'}`);
             if (!gridContainer) return;
 
             gridContainer.innerHTML = '';
 
-            // 최근 1년간의 날짜 생성
+            // 최근 3개월간의 날짜 생성 (약 12주)
             const endDate = new Date();
-            const startDate = new Date(endDate.getTime() - (364 * 24 * 60 * 60 * 1000));
+            const startDate = new Date(endDate.getTime() - (90 * 24 * 60 * 60 * 1000)); // 90일
             
             const allDates = [];
             for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
@@ -386,7 +430,7 @@
         }
 
         showError(message) {
-            const gridContainer = document.getElementById(`activity-grid-${this.container.id || 'default'}`);
+            const gridContainer = document.getElementById(`graden-widget-grid-${this.container.id || 'default'}`);
             if (gridContainer) {
                 gridContainer.innerHTML = `<div class="error">${message}</div>`;
             }
@@ -419,9 +463,9 @@
     // 전역 객체에 노출
     window.GradenWidget = GradenWidget;
 
-    // 자동 초기화 (data-tistory-blog-garden-widget 속성이 있는 요소들)
+    // 자동 초기화 (data-graden-widget 속성이 있는 요소들)
     function autoInit() {
-        const containers = document.querySelectorAll('[data-tistory-blog-garden-widget]');
+        const containers = document.querySelectorAll('[data-graden-widget]');
         containers.forEach(container => {
             const options = {};
             

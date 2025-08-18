@@ -1,7 +1,7 @@
 {
   "name": "blog-garden-widget",
-  "version": "1.0.0",
-  "description": "GitHub style blog activity visualization widget with RSS feed support",
+  "version": "1.2.0",
+  "description": "GitHub style blog activity visualization widget with RSS feed support, local proxy server integration, and enhanced customization options",
   "main": "blog-garden-widget.js",
   "scripts": {
     "build": "echo 'No build step required'",
@@ -20,7 +20,10 @@
     "heatmap",
     "blog-garden",
     "tistory-blog",
-    "jandi"
+    "jandi",
+    "proxy-server",
+    "activity-tracker",
+    "contribution-graph"
   ],
   "author": "pearlluck",
   "license": "MIT",
@@ -34,9 +37,9 @@
   "homepage": "https://github.com/vvspearlvvs/blog-garden-widget#readme",
   "files": [
     "blog-garden-widget.js",
-    "README.md"
+    "README.md",
+    "proxy-server.js"
   ],
-  "devDependencies": {},
   "engines": {
     "node": ">=12.0.0"
   }
