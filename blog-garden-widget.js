@@ -118,11 +118,12 @@
                 border-radius: 6px;
                 font-size: 12px;
                 white-space: nowrap;
-                z-index: 1000;
+                z-index: 9999;
                 opacity: 0;
                 visibility: hidden;
                 transition: opacity 0.2s ease, visibility 0.2s ease;
                 margin-bottom: 8px;
+                pointer-events: none;
             }
 
             .day-tooltip::after {
@@ -143,13 +144,13 @@
             .activity-footer {
                 text-align: center;
                 font-size: 11px;
-                color: #ffffff;
+                color: #e0e0e0;
             }
 
             .loading {
                 text-align: center;
                 padding: 40px 20px;
-                color: #ffffff;
+                color: #e0e0e0;
             }
 
             .error {
@@ -215,7 +216,7 @@
                 this.generateGrid();
                 this.startAutoUpdate();
             } catch (error) {
-                this.showError('활동 데이터를 불러올 수 없습니다.');
+                this.showError('데이터를 불러올 수 없습니다.');
                 console.error('Graden Widget initialization error:', error);
             }
         }
@@ -243,7 +244,7 @@
                     </div>
                     
                     <div id="graden-widget-grid-${this.container.id || 'default'}" class="activity-grid">
-                        <div class="loading">활동 데이터를 불러오는 중...</div>
+                        <div class="loading">데이터를 불러오는 중...</div>
                     </div>
                     
                     ${this.options.showFooter ? `
@@ -373,11 +374,14 @@
                     dayCell.className = `day-cell ${isToday ? 'today' : ''}`;
                     dayCell.style.backgroundColor = this.getColorByCount(count);
                     
-                    // 툴팁 추가
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'day-tooltip';
-                    tooltip.textContent = this.getTooltipText(date, count);
-                    dayCell.appendChild(tooltip);
+                    // 마우스 이벤트 추가
+                    dayCell.addEventListener('mouseenter', () => {
+                        this.updateFooterText(date, count);
+                    });
+                    
+                    dayCell.addEventListener('mouseleave', () => {
+                        this.resetFooterText();
+                    });
                     
                     weekColumn.appendChild(dayCell);
                 });
@@ -415,6 +419,30 @@
                 return `${formattedDate}: 게시물 없음`;
             }
             return `${formattedDate}: ${count}개 게시물`;
+        }
+
+        updateFooterText(date, count) {
+            const footer = this.container.querySelector('.activity-footer');
+            if (footer) {
+                const formattedDate = date.toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                if (count === 0) {
+                    footer.textContent = `${formattedDate}: 게시물 없음`;
+                } else {
+                    footer.textContent = `${formattedDate}: ${count}개 게시물`;
+                }
+            }
+        }
+
+        resetFooterText() {
+            const footer = this.container.querySelector('.activity-footer');
+            if (footer) {
+                footer.textContent = '최근 3개월간의 활동을 보여줍니다';
+            }
         }
 
         startAutoUpdate() {

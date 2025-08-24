@@ -18,13 +18,24 @@
         style.textContent = `
             .graden-widget-1y {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
-                max-width: 100%;
+                width: 1000px;
+                min-width: 1000px;
                 padding: 20px;
                 background: #555 !important;
                 border-radius: 8px;
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
                 margin: 20px 0;
                 box-sizing: border-box;
+            }
+
+            /* 1년 버전 전용 그리드 스타일 */
+            .graden-widget-1y .activity-grid {
+                display: flex;
+                gap: 4px;
+                margin-bottom: 16px;
+                overflow: visible;
+                width: 960px;
+                min-width: 960px;
             }
 
             .activity-header {
@@ -66,13 +77,11 @@
                 border-radius: 2px;
             }
 
+            /* 3개월 버전과 공통으로 사용되는 기본 그리드 스타일 */
             .activity-grid {
                 display: flex;
                 gap: 4px;
                 margin-bottom: 16px;
-                overflow: hidden;
-                width: 210px;
-                max-width: 210px;
             }
 
             .week-column {
@@ -81,6 +90,17 @@
                 gap: 4px;
             }
 
+            /* 1년 버전 전용 day-cell 스타일 */
+            .graden-widget-1y .day-cell {
+                width: 12px;
+                height: 12px;
+                border-radius: 2px;
+                cursor: pointer;
+                transition: transform 0.1s ease;
+                position: relative;
+            }
+
+            /* 3개월 버전과 공통으로 사용되는 기본 day-cell 스타일 */
             .day-cell {
                 width: 12px;
                 height: 12px;
@@ -90,6 +110,12 @@
                 position: relative;
             }
 
+            /* 1년 버전 전용 hover 효과 */
+            .graden-widget-1y .day-cell:hover {
+                transform: scale(1.2);
+            }
+
+            /* 3개월 버전과 공통으로 사용되는 기본 hover 효과 */
             .day-cell:hover {
                 transform: scale(1.2);
             }
@@ -110,11 +136,12 @@
                 border-radius: 6px;
                 font-size: 12px;
                 white-space: nowrap;
-                z-index: 1000;
+                z-index: 9999;
                 opacity: 0;
                 visibility: hidden;
                 transition: opacity 0.2s ease, visibility 0.2s ease;
                 margin-bottom: 8px;
+                pointer-events: none;
             }
 
             .day-tooltip::after {
@@ -135,13 +162,13 @@
             .activity-footer {
                 text-align: center;
                 font-size: 11px;
-                color: #656d76;
+                color: #e0e0e0;
             }
 
             .loading {
                 text-align: center;
                 padding: 40px 20px;
-                color: #656d76;
+                color: #e0e0e0;
             }
 
             .error {
@@ -207,7 +234,7 @@
                 this.generateGrid();
                 this.startAutoUpdate();
             } catch (error) {
-                this.showError('활동 데이터를 불러올 수 없습니다.');
+                this.showError('데이터를 불러올 수 없습니다.');
                 console.error('Graden Widget initialization error:', error);
             }
         }
@@ -235,7 +262,7 @@
                     </div>
                     
                     <div id="graden-widget-1y-grid-${this.container.id || 'default'}" class="activity-grid">
-                        <div class="loading">활동 데이터를 불러오는 중...</div>
+                        <div class="loading">데이터를 불러오는 중...</div>
                     </div>
                     
                     ${this.options.showFooter ? `
@@ -321,8 +348,32 @@
         }
 
         generateGrid() {
-            const gridContainer = document.getElementById(`graden-widget-1y-grid-${this.container.id || 'default'}`);
-            if (!gridContainer) return;
+            console.log('=== 1년 버전 위젯 generateGrid 시작 ===');
+            
+            // 그리드 컨테이너를 찾는 방법 개선
+            let gridContainer = document.getElementById(`graden-widget-1y-grid-${this.container.id || 'default'}`);
+            console.log('ID로 찾은 그리드 컨테이너:', gridContainer);
+            
+            // 위 방법으로 찾지 못한 경우, 컨테이너 내부에서 직접 찾기
+            if (!gridContainer) {
+                gridContainer = this.container.querySelector('.activity-grid');
+                console.log('클래스로 찾은 그리드 컨테이너:', gridContainer);
+            }
+            
+            // 여전히 찾지 못한 경우, 새로 생성
+            if (!gridContainer) {
+                console.log('그리드 컨테이너를 새로 생성합니다.');
+                gridContainer = document.createElement('div');
+                gridContainer.className = 'activity-grid';
+                this.container.appendChild(gridContainer);
+            }
+            
+            if (!gridContainer) {
+                console.error('그리드 컨테이너를 찾을 수 없습니다.');
+                return;
+            }
+            
+            console.log('최종 그리드 컨테이너:', gridContainer);
 
             gridContainer.innerHTML = '';
 
@@ -330,10 +381,15 @@
             const endDate = new Date();
             const startDate = new Date(endDate.getTime() - (364 * 24 * 60 * 60 * 1000)); // 364일
             
+            console.log('시작 날짜:', startDate.toLocaleDateString('ko-KR'));
+            console.log('종료 날짜:', endDate.toLocaleDateString('ko-KR'));
+            
             const allDates = [];
             for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
                 allDates.push(new Date(d));
             }
+            
+            console.log('생성된 총 날짜 수:', allDates.length);
 
             // 주별로 그룹화
             this.weeks = [];
@@ -351,6 +407,9 @@
             if (currentWeek.length > 0) {
                 this.weeks.push(currentWeek);
             }
+            
+            console.log('생성된 주(Week) 개수:', this.weeks.length);
+            console.log('마지막 주의 날짜 수:', this.weeks[this.weeks.length - 1]?.length || 0);
 
             // 그리드 렌더링
             this.weeks.forEach((week, weekIndex) => {
@@ -365,11 +424,14 @@
                     dayCell.className = `day-cell ${isToday ? 'today' : ''}`;
                     dayCell.style.backgroundColor = this.getColorByCount(count);
                     
-                    // 툴팁 추가
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'day-tooltip';
-                    tooltip.textContent = this.getTooltipText(date, count);
-                    dayCell.appendChild(tooltip);
+                    // 마우스 이벤트 추가
+                    dayCell.addEventListener('mouseenter', () => {
+                        this.updateFooterText(date, count);
+                    });
+                    
+                    dayCell.addEventListener('mouseleave', () => {
+                        this.resetFooterText();
+                    });
                     
                     weekColumn.appendChild(dayCell);
                 });
@@ -409,6 +471,30 @@
             return `${formattedDate}: ${count}개 게시물`;
         }
 
+        updateFooterText(date, count) {
+            const footer = this.container.querySelector('.activity-footer');
+            if (footer) {
+                const formattedDate = date.toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                if (count === 0) {
+                    footer.textContent = `${formattedDate}: 게시물 없음`;
+                } else {
+                    footer.textContent = `${formattedDate}: ${count}개 게시물`;
+                }
+            }
+        }
+
+        resetFooterText() {
+            const footer = this.container.querySelector('.activity-footer');
+            if (footer) {
+                footer.textContent = '최근 1년간 활동을 보여줍니다';
+            }
+        }
+
         startAutoUpdate() {
             this.intervalId = setInterval(async () => {
                 try {
@@ -422,7 +508,12 @@
         }
 
         showError(message) {
-            const gridContainer = document.getElementById(`graden-widget-1y-grid-${this.container.id || 'default'}`);
+            let gridContainer = document.getElementById(`graden-widget-1y-grid-${this.container.id || 'default'}`);
+            
+            if (!gridContainer) {
+                gridContainer = this.container.querySelector('.activity-grid');
+            }
+            
             if (gridContainer) {
                 gridContainer.innerHTML = `<div class="error">${message}</div>`;
             }

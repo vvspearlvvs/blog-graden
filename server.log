@@ -1,0 +1,6 @@
+(node:16699) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+🚀 CORS 프록시 서버가 http://localhost:3001에서 실행 중입니다
+📡 RSS 프록시: http://localhost:3001/proxy/rss?url=YOUR_RSS_URL
+📊 RSS 분석: http://localhost:3001/analyze/rss?url=YOUR_RSS_URL
+💚 헬스체크: http://localhost:3001/health

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activity Widget CDN 테스트</title>
+    <title>티스토리 잔디 위젯 테스트</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -121,7 +121,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎯 Activity Widget CDN 테스트</h1>
+        <h1>🎯 티스토리 잔디 위젯 테스트</h1>
         <div class="subtitle">
             npm 배포 후 unpkg CDN을 통해 위젯이 정상 작동하는지 확인하는 테스트 페이지입니다.
         </div>
@@ -139,66 +139,13 @@
 
         <!-- 기본 위젯 테스트 -->
         <div class="test-section">
-            <h2>🔧 기본 위젯 테스트</h2>
+            <h2>🔧 기본 위젯(3개월) 테스트</h2>
             <div class="widget-container">
                 <div
                     id="basic-widget"
                     data-graden-widget
                     data-rss-url="https://pearlluck.tistory.com/rss"
-                    data-title="기본 위젯 테스트"
-                    data-show-legend="true"
-                    data-show-footer="true">
-                </div>
-            </div>
-            <div class="code-block">
-&lt;div data-graden-widget
-     data-rss-url="https://pearlluck.tistory.com/rss"
-     data-title="기본 위젯 테스트"
-     data-show-legend="true"
-     data-show-footer="true"&gt;
-&lt;/div&gt;
-            </div>
-        </div>
-
-        <!-- 프로그래밍 방식 테스트 -->
-        <div class="test-section">
-            <h2>⚙️ 프로그래밍 방식 테스트</h2>
-            <div class="widget-container">
-                <div id="programmatic-widget"></div>
-            </div>
-            <div class="test-buttons">
-                <button onclick="createWidget()">위젯 생성</button>
-                <button onclick="updateWidget()" id="update-btn" disabled>데이터 업데이트</button>
-                <button onclick="changeTitle()" id="change-btn" disabled>제목 변경</button>
-                <button onclick="destroyWidget()" id="destroy-btn" disabled>위젯 제거</button>
-            </div>
-            <div class="code-block">
-// 위젯 생성
-const widget = new GradenWidget('#programmatic-widget', {
-    rssUrl: 'https://pearlluck.tistory.com/rss',
-    title: '프로그래밍 위젯'
-});
-
-// 데이터 업데이트
-widget.update();
-
-// 제목 변경
-widget.setOptions({ title: '새로운 제목' });
-
-// 위젯 제거
-widget.destroy();
-            </div>
-        </div>
-
-        <!-- 커스텀 설정 테스트 -->
-        <div class="test-section">
-            <h2>🎨 커스텀 설정 테스트</h2>
-            <div class="widget-container">
-                <div
-                    id="custom-widget"
-                    data-graden-widget
-                    data-rss-url="https://pearlluck.tistory.com/rss"
-                    data-title="커스텀 위젯"
+                    data-title="최근 활동"
                     data-update-interval="43200000"
                     data-show-legend="true"
                     data-show-footer="true">
@@ -207,7 +154,7 @@ widget.destroy();
             <div class="code-block">
 &lt;div data-graden-widget
      data-rss-url="https://pearlluck.tistory.com/rss"
-     data-title="커스텀 위젯"
+     data-title="최근 활동"
      data-update-interval="43200000"
      data-show-legend="true"
      data-show-footer="true"&gt;
@@ -302,7 +249,7 @@ fetch(`http://localhost:3001/analyze/rss?url=${encodeURIComponent(rssUrl)}`)
                 
                 programmaticWidget = new GradenWidget('#programmatic-widget', {
                     rssUrl: 'https://pearlluck.tistory.com/rss',
-                    title: '프로그래밍 위젯'
+                    title: '테스트 위젯'
                 });
                 
                 document.getElementById('update-btn').disabled = false;
@@ -417,6 +364,21 @@ fetch(`http://localhost:3001/analyze/rss?url=${encodeURIComponent(rssUrl)}`)
                 } else {
                     console.error('GradenWidget1Y 클래스를 찾을 수 없습니다.');
                     updateTestResults('1년 버전 위젯 초기화', '실패: GradenWidget1Y 클래스 없음');
+                    
+                    // 1년 버전 위젯 클래스가 없을 경우 3개월 버전으로 대체
+                    if (typeof GradenWidget !== 'undefined') {
+                        console.log('GradenWidget1Y 대신 GradenWidget 사용');
+                        const options = {
+                            rssUrl: container.getAttribute('data-rss-url') || 'https://pearlluck.tistory.com/rss',
+                            title: container.getAttribute('data-title') || '1년 활동 기록 (3개월 버전)',
+                            updateInterval: parseInt(container.getAttribute('data-update-interval')) || 86400000,
+                            showLegend: container.getAttribute('data-show-legend') !== 'false',
+                            showFooter: container.getAttribute('data-show-footer') !== 'false'
+                        };
+                        
+                        new GradenWidget(container, options);
+                        updateTestResults('1년 버전 위젯 초기화', '3개월 버전으로 대체됨');
+                    }
                 }
             });
         }
@@ -472,6 +434,71 @@ fetch(`http://localhost:3001/analyze/rss?url=${encodeURIComponent(rssUrl)}`)
                 `;
                 
                 updateTestResults('RSS 분석', '실패: ' + error.message);
+            }
+        }
+
+        // 1년 버전 위젯 수동 생성
+        function createYearlyWidget() {
+            const container = document.getElementById('yearly-widget');
+            if (!container) {
+                alert('1년 버전 위젯 컨테이너를 찾을 수 없습니다.');
+                return;
+            }
+            
+            container.innerHTML = ''; // 기존 내용 제거
+            
+            if (typeof GradenWidget1Y !== 'undefined') {
+                const yearlyWidget = new GradenWidget1Y(container, {
+                    rssUrl: 'https://pearlluck.tistory.com/rss',
+                    title: '1년 활동 기록 (수동 생성)',
+                    showLegend: true,
+                    showFooter: true
+                });
+                
+                // 전역 변수로 저장
+                window.yearlyWidget = yearlyWidget;
+                updateTestResults('1년 버전 위젯 수동 생성', '성공');
+                alert('1년 버전 위젯이 성공적으로 생성되었습니다!');
+            } else {
+                updateTestResults('1년 버전 위젯 수동 생성', '실패: GradenWidget1Y 클래스 없음');
+                alert('GradenWidget1Y 클래스를 찾을 수 없습니다. 3개월 버전으로 생성합니다.');
+                
+                // 3개월 버전으로 대체
+                if (typeof GradenWidget !== 'undefined') {
+                    const monthlyWidget = new GradenWidget(container, {
+                        rssUrl: 'https://pearlluck.tistory.com/rss',
+                        title: '1년 활동 기록 (3개월 버전)',
+                        showLegend: true,
+                        showFooter: true
+                    });
+                    
+                    window.yearlyWidget = monthlyWidget;
+                    updateTestResults('1년 버전 위젯 수동 생성', '3개월 버전으로 대체됨');
+                    alert('3개월 버전 위젯이 생성되었습니다.');
+                }
+            }
+        }
+
+        // 1년 버전 위젯 테스트
+        function testYearlyWidget() {
+            if (window.yearlyWidget) {
+                console.log('1년 버전 위젯 인스턴스:', window.yearlyWidget);
+                console.log('위젯 옵션:', window.yearlyWidget.options);
+                
+                // 그리드 정보 확인
+                const gridContainer = window.yearlyWidget.container.querySelector('.activity-grid');
+                if (gridContainer) {
+                    const weekColumns = gridContainer.querySelectorAll('.week-column');
+                    console.log('주(Week) 개수:', weekColumns.length);
+                    console.log('총 그리드 셀 개수:', weekColumns.length * 7);
+                    
+                    updateTestResults('1년 버전 위젯 테스트', `주: ${weekColumns.length}개, 셀: ${weekColumns.length * 7}개`);
+                } else {
+                    updateTestResults('1년 버전 위젯 테스트', '그리드 컨테이너를 찾을 수 없음');
+                }
+            } else {
+                updateTestResults('1년 버전 위젯 테스트', '위젯이 생성되지 않음');
+                alert('먼저 1년 버전 위젯을 생성해주세요.');
             }
         }
 
