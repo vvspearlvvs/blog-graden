@@ -2,15 +2,25 @@ const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
 const xml2js = require('xml2js');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
-// CORS 설정
+// CORS 설정 - 모든 도메인 허용
 app.use(cors({
-    origin: ['http://localhost:8080', 'http://127.0.0.1:8080', 'http://localhost:3000', 'http://127.0.0.1:3000', 'null'],
+    origin: '*', // 프로덕션에서는 특정 도메인만 허용하는 것이 좋습니다
     credentials: true
 }));
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15분
+    max: 100, // IP당 최대 100개 요청
+    message: '너무 많은 요청이 발생했습니다. 잠시 후 다시 시도해주세요.'
+});
+
+app.use('/analyze/rss', limiter);
+app.use('/proxy/rss', limiter);
 
 // RSS 프록시 엔드포인트
 app.get('/proxy/rss', async (req, res) => {
@@ -124,9 +134,10 @@ app.get('/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// 환경 변수로 포트 설정
 app.listen(PORT, () => {
-    console.log(`🚀 CORS 프록시 서버가 http://localhost:${PORT}에서 실행 중입니다`);
-    console.log(`📡 RSS 프록시: http://localhost:${PORT}/proxy/rss?url=YOUR_RSS_URL`);
-    console.log(`📊 RSS 분석: http://localhost:${PORT}/analyze/rss?url=YOUR_RSS_URL`);
-    console.log(`💚 헬스체크: http://localhost:${PORT}/health`);
+    console.log(`🚀 CORS 프록시 서버가 포트 ${PORT}에서 실행 중입니다`);
+    console.log(`📡 RSS 프록시: /proxy/rss?url=YOUR_RSS_URL`);
+    console.log(`📊 RSS 분석: /analyze/rss?url=YOUR_RSS_URL`);
+    console.log(`💚 헬스체크: /health`);
 }); 

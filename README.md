@@ -123,33 +123,6 @@ const widget = new GradenWidget('#container', {
 | `showFooter` | boolean | `true` | 푸터 표시 여부 |
 | `colors` | object | GitHub 스타일 색상 | 색상 커스터마이징 |
 
-## 🔧 API 메서드
-
-### `update()`
-수동으로 데이터를 업데이트합니다.
-
-```javascript
-widget.update().then(() => {
-    console.log('데이터 업데이트 완료');
-});
-```
-
-### `destroy()`
-위젯을 제거하고 메모리를 정리합니다.
-
-```javascript
-widget.destroy();
-```
-
-### `setOptions(newOptions)`
-위젯 옵션을 변경합니다.
-
-```javascript
-widget.setOptions({
-    title: '새로운 제목',
-    showLegend: false
-});
-```
 
 ## 🌐 npm 패키지 배포
 
@@ -207,11 +180,15 @@ colors: {
 
 ## 📈 버전 히스토리
 
+### v1.3.0
+- 🚀 **프록시 서버 배포** : https://blog-graden.vercel.app
+
+### v1.2.1
+- 🚀 **CDN 테스트 수정** : 3개월,1년 위젯 수정
+
 ### v1.2.0
 - 🚀 **성능 최적화**: 메모리 사용량 개선 및 렌더링 성능 향상
 - 🔧 **에러 핸들링 강화**: 네트워크 오류 및 RSS 파싱 오류에 대한 견고한 처리
-- 📱 **반응형 개선**: 모바일 디바이스에서의 사용성 향상
-- 🎨 **UI/UX 개선**: 더 나은 시각적 피드백과 사용자 경험
 - 📊 **데이터 처리 개선**: RSS 피드 파싱 정확도 향상
 
 ### v1.1.0
@@ -228,15 +205,25 @@ colors: {
 - 24시간 자동 업데이트
 - 완전한 커스터마이징 옵션
 
-## 🤝 기여하기
+## 🚀 프록시 서버 배포
 
-버그 리포트, 기능 제안, 풀 리퀘스트를 환영합니다!
+### 자체 프록시 서버 사용
+```javascript
+const widget = new GradenWidget('#container', {
+    rssUrl: 'https://your-blog.com/rss',
+    proxyUrl: 'https://blog-graden.vercel.app'
+});
+```
 
-1. 이 저장소를 포크하세요
-2. 새로운 기능 브랜치를 생성하세요 (`git checkout -b feature/amazing-feature`)
-3. 변경사항을 커밋하세요 (`git commit -m 'Add some amazing feature'`)
-4. 브랜치에 푸시하세요 (`git push origin feature/amazing-feature`)
-5. Pull Request를 생성하세요
+### 기본 프록시 서버 사용 (제한적)
+```javascript
+const widget = new GradenWidget('#container', {
+    rssUrl: 'https://your-blog.com/rss'
+    // proxyUrl을 설정하지 않으면 기본 프록시 서버 사용
+});
+```
+```
+
 
 ## 📄 라이선스
 

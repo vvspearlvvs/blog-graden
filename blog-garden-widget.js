@@ -182,11 +182,12 @@
         constructor(container, options = {}) {
             this.container = typeof container === 'string' ? document.querySelector(container) : container;
             this.options = {
-                rssUrl: options.rssUrl || 'https://pearlluck.tistory.com/rss',
-                title: options.title || '활동 기록',
-                updateInterval: options.updateInterval || 24 * 60 * 60 * 1000, // 24시간
-                showLegend: options.showLegend !== false,
-                showFooter: options.showFooter !== false,
+                rssUrl: 'https://pearlluck.tistory.com/rss',
+                title: '활동 기록',
+                updateInterval: 24 * 60 * 60 * 1000, // 24시간
+                showLegend: true,
+                showFooter: true,
+                proxyUrl: 'https://blog-graden.vercel.app', // 프록시 서버 URL
                 colors: options.colors || {
                     0: '#ebedef',
                     1: '#9be9a8',
@@ -258,62 +259,14 @@
 
         async fetchActivityData() {
             try {
-                // 로컬 프록시 서버 사용 (가장 안정적)
-                let dateCounts = null;
+                const proxyUrl = this.options.proxyUrl || 'https://blog-graden.vercel.app';
+                const response = await fetch(`${proxyUrl}/analyze/rss?url=${encodeURIComponent(this.options.rssUrl)}`);
                 
-                // 방법 1: 로컬 프록시 서버의 분석 엔드포인트 시도
-                try {
-                    const analyzeUrl = `http://localhost:3001/analyze/rss?url=${encodeURIComponent(this.options.rssUrl)}`;
-                    const response = await fetch(analyzeUrl);
-                    
-                    if (response.ok) {
-                        dateCounts = await response.json();
-                        console.log('로컬 프록시 서버로 RSS 분석 성공');
-                    } else {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                } catch (error) {
-                    console.log('로컬 프록시 서버 실패, allorigins.win 시도:', error.message);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
-                // 방법 2: allorigins.win 시도 (백업)
-                if (!dateCounts) {
-                    try {
-                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(this.options.rssUrl)}`;
-                        const response = await fetch(proxyUrl);
-                        
-                        if (response.ok) {
-                            const result = await response.json();
-                            const rssText = result.contents;
-                            
-                            // RSS 파싱
-                            const parser = new DOMParser();
-                            const xmlDoc = parser.parseFromString(rssText, 'text/xml');
-                            
-                            // 날짜별 게시물 수 계산
-                            dateCounts = {};
-                            const items = xmlDoc.querySelectorAll('item');
-                            
-                            items.forEach(item => {
-                                const pubDate = item.querySelector('pubDate');
-                                if (pubDate && pubDate.textContent) {
-                                    const date = new Date(pubDate.textContent);
-                                    const dateString = date.toISOString().split('T')[0];
-                                    dateCounts[dateString] = (dateCounts[dateString] || 0) + 1;
-                                }
-                            });
-                            
-                            console.log('allorigins.win 프록시로 RSS 로드 성공');
-                        }
-                    } catch (error) {
-                        console.log('allorigins.win 프록시 실패:', error.message);
-                    }
-                }
-                
-                if (!dateCounts) {
-                    throw new Error('프록시 서비스가 실패했습니다. 로컬 프록시 서버가 실행 중인지 확인하세요.');
-                }
-
+                const dateCounts = await response.json();
                 this.data = dateCounts;
                 this.maxCount = Math.max(...Object.values(this.data), 1);
                 
@@ -503,6 +456,7 @@
             if (container.dataset.updateInterval) options.updateInterval = parseInt(container.dataset.updateInterval);
             if (container.dataset.showLegend !== undefined) options.showLegend = container.dataset.showLegend === 'true';
             if (container.dataset.showFooter !== undefined) options.showFooter = container.dataset.showFooter === 'true';
+            if (container.dataset.proxyUrl) options.proxyUrl = container.dataset.proxyUrl; // 프록시 URL 추가
 
             new GradenWidget(container, options);
         });
