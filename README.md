@@ -11,9 +11,11 @@ GitHub 스타일의 티스토리 블로그 활동 기록 시각화 위젯입니�
 - 🌏 **한국어 지원**: 한국어 날짜 형식과 메시지
 - ⚙️ **완전 커스터마이징**: 제목, 색상, 업데이트 주기 등 설정 가능
 - 🧹 **메모리 관리**: destroy() 메서드로 리소스 정리
-- 🚀 **로컬 프록시 서버**: CORS 문제 해결을 위한 로컬 프록시 서버 제공
+- 🚀 **배포된 프록시 서버**: CORS 문제 해결을 위한 클라우드 프록시 서버 제공
 - 🔧 **향상된 성능**: 서버 사이드 RSS 파싱으로 클라이언트 부담 감소
 - 📊 **다양한 RSS 형식**: RSS, Atom 피드 모두 지원
+- 👥 **다중 사용자 지원**: 여러 사용자가 동시에 사용 가능
+- 🛡️ **Rate Limiting**: API 남용 방지를 위한 요청 제한
 
 ## 🚀 빠른 시작
 
@@ -38,25 +40,47 @@ const widget = new GradenWidget('#my-tistory-blog-garden-widget', {
 });
 ```
 
-## 🔧 프록시 서버 설정 (v1.1.0+)
+## 🔧 프록시 서버 설정 (v1.3.0+)
 
-CORS 문제를 해결하기 위해 로컬 프록시 서버를 제공합니다.
+### 기본 프록시 서버 사용 (권장)
 
-### 프록시 서버 실행
+기본적으로 제공되는 프록시 서버를 사용하여 CORS 문제를 해결합니다.
+
+```javascript
+const widget = new GradenWidget('#container', {
+    rssUrl: 'https://your-blog.com/rss',
+    // proxyUrl을 설정하지 않으면 기본 프록시 서버 사용
+});
+```
+
+### 자체 프록시 서버 배포
+
+더 많은 제어권을 원한다면 자체 프록시 서버를 배포할 수 있습니다.
+
+#### Vercel 배포 (권장)
 
 ```bash
-# 의존성 설치
-npm install cors express node-fetch xml2js
+# Vercel CLI 설치
+npm install -g vercel
 
-# 프록시 서버 실행
-node proxy-server.js
+# 프로젝트 배포
+vercel --prod
+```
+
+#### 프록시 서버 설정
+
+```javascript
+const widget = new GradenWidget('#container', {
+    rssUrl: 'https://your-blog.com/rss',
+    proxyUrl: 'https://your-deployed-proxy.vercel.app'
+});
 ```
 
 ### 프록시 서버 엔드포인트
 
-- **RSS 분석**: `http://localhost:3001/analyze/rss?url=RSS_URL`
-- **원본 RSS**: `http://localhost:3001/proxy/rss?url=RSS_URL`
-- **헬스체크**: `http://localhost:3001/health`
+- **RSS 분석**: `/analyze/rss?url=RSS_URL`
+- **원본 RSS**: `/proxy/rss?url=RSS_URL`
+- **헬스체크**: `/health`
 
 ### 프록시 서버 기능
 
@@ -65,6 +89,7 @@ node proxy-server.js
 - CORS 문제 해결
 - 다양한 RSS 형식 지원 (RSS, Atom)
 - 에러 핸들링 및 로깅
+- Rate Limiting (IP당 15분에 100개 요청)
 
 ## 📖 사용법
 
@@ -90,6 +115,7 @@ const widget = new GradenWidget('#container', {
     updateInterval: 12 * 60 * 60 * 1000, // 12시간마다 업데이트
     showLegend: true,
     showFooter: true,
+    proxyUrl: 'https://your-custom-proxy.com', // 자체 프록시 서버
     colors: {
         0: '#ebedef',  // 활동 없음
         1: '#9be9a8',  // 낮은 활동
@@ -100,15 +126,16 @@ const widget = new GradenWidget('#container', {
 });
 ```
 
-### HTML 속성으로 자동 초기화
+### HTML 속성 기반 설정
 
 ```html
 <div data-graden-widget
-     data-rss-url="https://pearlluck.tistory.com/rss"
-     data-title="자동 초기화 위젯"
+     data-rss-url="https://your-blog.com/rss"
+     data-title="블로그 활동"
      data-update-interval="86400000"
      data-show-legend="true"
-     data-show-footer="true">
+     data-show-footer="true"
+     data-proxy-url="https://your-proxy.com">
 </div>
 ```
 
@@ -122,7 +149,7 @@ const widget = new GradenWidget('#container', {
 | `showLegend` | boolean | `true` | 범례 표시 여부 |
 | `showFooter` | boolean | `true` | 푸터 표시 여부 |
 | `colors` | object | GitHub 스타일 색상 | 색상 커스터마이징 |
-
+| `proxyUrl` | string | `null` | 자체 프록시 서버 URL (v1.3.0+) |
 
 ## 🌐 npm 패키지 배포
 
@@ -222,8 +249,6 @@ const widget = new GradenWidget('#container', {
     // proxyUrl을 설정하지 않으면 기본 프록시 서버 사용
 });
 ```
-```
-
 
 ## 📄 라이선스
 
