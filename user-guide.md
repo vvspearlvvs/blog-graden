@@ -2,14 +2,6 @@
 
 GitHub 스타일의 블로그 활동 기록 위젯을 티스토리 블로그에 직접 삽입하는 방법을 단계별로 안내합니다.
 
-## 🎯 적용 결과 미리보기
-
-적용 후 블로그에 다음과 같은 위젯이 표시됩니다:
-- 📅 **최근 1년간의 활동 기록**을 GitHub 잔디 스타일로 시각화
-- 🎨 **정확한 GitHub 색상**으로 활동 수준 표시
-- 🔄 **24시간마다 자동 업데이트**로 최신 데이터 반영
-- 📱 **반응형 디자인**으로 모바일과 데스크톱 모두 지원
-- 🚀 **향상된 성능**과 **견고한 에러 처리**
 
 ## 📋 사전 준비사항
 
@@ -22,81 +14,42 @@ GitHub 스타일의 블로그 활동 기록 위젯을 티스토리 블로그에 
 - Chrome, Firefox, Safari 등 최신 브라우저 사용
 - 티스토리 관리자 페이지 접속 가능
 
-## 🚀 적용 방법 1: HTML 편집기 사용 (권장)
-
-### 1단계: 티스토리 관리자 페이지 접속
-1. [티스토리](https://www.tistory.com) 로그인
-2. **내 블로그** → **관리** 클릭
-3. **꾸미기** 메뉴 클릭
-
-### 2단계: HTML 편집기 열기
-1. **HTML 편집** 버튼 클릭
-2. **HTML 편집** 창이 열립니다
-
-### 3단계: 위젯 코드 삽입
-원하는 위치에 다음 코드를 복사/붙여넣기:
-
+## 🚀 적용 방법 1: 사이드바 위젯 (3개월 위젯 권장)
 ```html
-<!-- Graden Widget 라이브러리 로드 (v1.2.0) -->
-<script src="https://unpkg.com/blog-garden-widget@1.2.0/blog-garden-widget.js"></script>
-
-<!-- 위젯 컨테이너 -->
+<!-- 티스토리 관리자 → 꾸미기 → 사이드바 → HTML 위젯 -->
 <div data-graden-widget
-     data-rss-url="https://your-blog-name.tistory.com/rss"
-     data-title="블로그 활동 기록"
+     data-rss-url="https://your-blog.tistory.com/rss"
+     data-title="최근 활동"
      data-show-legend="true"
      data-show-footer="true">
 </div>
+
+<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"></script>
 ```
 
-### 4단계: RSS URL 수정
-`https://your-blog-name.tistory.com/rss` 부분을 **실제 블로그 RSS URL**로 변경:
+## 🚀 적용 방법 2: HTML 본문 내 삽입
 ```html
-data-rss-url="https://pearlluck.tistory.com/rss"
+<!-- 티스토리 관리자 → 꾸미기 → HTML 편집 -->
+<div class="blog-activity-widget">
+    <h3>블로그 활동 기록</h3>
+    <div data-graden-widget
+         data-rss-url="https://your-blog.tistory.com/rss"
+         data-title="최근 활동">
+    </div>
+</div>
 ```
 
-### 5단계: 저장 및 확인
 1. **저장** 버튼 클릭
 2. **블로그로 이동**하여 위젯이 정상적으로 표시되는지 확인
 
-## 🔧 적용 방법 2: 사이드바 위젯으로 추가
 
-### 1단계: 사이드바 설정
-1. **꾸미기** → **사이드바** 클릭
-2. **위젯 추가** 버튼 클릭
-
-### 2단계: HTML 위젯 선택
-1. **HTML** 위젯 찾기
-2. **추가** 버튼 클릭
-
-### 3단계: 위젯 코드 입력
-HTML 위젯 편집 창에 다음 코드 입력:
-
-```html
-<!-- Graden Widget 라이브러리 로드 (v1.2.0) -->
-<script src="https://unpkg.com/blog-garden-widget@1.2.0/blog-garden-widget.js"></script>
-
-<!-- 위젯 컨테이너 -->
-<div data-graden-widget
-     data-rss-url="https://your-blog-name.tistory.com/rss"
-     data-title="블로그 활동 기록"
-     data-show-legend="true"
-     data-show-footer="true">
-</div>
-```
-
-### 4단계: 저장 및 배치
-1. **저장** 버튼 클릭
-2. **위젯 순서 조정** (드래그 앤 드롭)
-3. **적용** 버튼 클릭
-
-## ⚙️ 고급 설정 옵션
+## ⚙️ 기본 커스터마이징 옵션
 
 ### 기본 설정 (권장)
 ```html
 <div data-graden-widget
      data-rss-url="https://your-blog-name.tistory.com/rss"
-     data-title="블로그 활동 기록"
+     data-title="최근 활동"
      data-show-legend="true"
      data-show-footer="true">
 ```
@@ -134,12 +87,12 @@ HTML 위젯 편집 창에 다음 코드 입력:
 
 ## 🎨 JavaScript로 고급 커스터마이징
 
-### 프로그래밍 방식으로 위젯 생성
+### 위젯 생성(커스텀 색상 테마 설정)
 ```html
 <!-- 위젯 컨테이너 -->
 <div id="my-blog-garden-widget"></div>
 
-<script src="https://unpkg.com/blog-garden-widget@1.2.0/blog-garden-widget.js"></script>
+<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"></script>
 <script>
 // 위젯 인스턴스 생성
 const widget = new GradenWidget('#my-blog-garden-widget', {

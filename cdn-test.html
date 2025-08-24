@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>티스토리 잔디 위젯 테스트</title>
+    <title>Blog Garden Widget 테스트 페이지</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -117,13 +117,108 @@
             background: #656d76;
             cursor: not-allowed;
         }
+        
+        .rss-input-section {
+            background: #f1f8ff;
+            border: 1px solid #79c0ff;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .rss-input-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .rss-input-group label {
+            font-weight: 600;
+            color: #24292f;
+            min-width: 120px;
+        }
+        
+        .rss-input-group input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 300px;
+        }
+        
+        .rss-input-group button {
+            background: #2da44e;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        
+        .rss-input-group button:hover {
+            background: #2c974b;
+        }
+        
+        .example-urls {
+            margin-top: 16px;
+            padding: 12px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e1e4e8;
+        }
+        
+        .example-urls h4 {
+            margin: 0 0 8px 0;
+            color: #24292f;
+            font-size: 14px;
+        }
+        
+        .example-urls ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #656d76;
+            font-size: 13px;
+        }
+        
+        .example-urls li {
+            margin-bottom: 4px;
+        }
+        
+        .example-urls a {
+            color: #0969da;
+            text-decoration: none;
+        }
+        
+        .example-urls a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎯 티스토리 잔디 위젯 테스트</h1>
+        <h1>🎯 Blog Garden Widget 테스트 페이지</h1>
         <div class="subtitle">
-            npm 배포 후 unpkg CDN을 통해 위젯이 정상 작동하는지 확인하는 테스트 페이지입니다.
+            사용자가 직접 RSS URL을 입력하여 위젯을 테스트할 수 있는 페이지입니다.
+        </div>
+
+        <!-- RSS URL 입력 섹션 -->
+        <div class="rss-input-section">
+            <h2>📡 RSS URL 설정</h2>
+            <div class="rss-input-group">
+                <label for="rss-url-input">RSS URL:</label>
+                <input type="url" id="rss-url-input" placeholder="https://your-blog.com/rss" value="https://pearlluck.tistory.com/rss">
+                <button onclick="updateWidgets()">위젯 업데이트</button>
+            </div>
+            <div class="rss-input-group">
+                <label for="widget-title-input">위젯 제목:</label>
+                <input type="text" id="widget-title-input" placeholder="블로그 활동" value="블로그 활동">
+                <button onclick="updateWidgets()">위젯 업데이트</button>
+            </div>
         </div>
 
         <!-- CDN 로드 상태 확인 -->
@@ -134,28 +229,27 @@
             </div>
             <div class="code-block">
 &lt;script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"&gt;&lt;/script&gt;
+&lt;script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"&gt;&lt;/script&gt;
             </div>
         </div>
 
-        <!-- 기본 위젯 테스트 -->
+        <!-- 3개월 버전 위젯 테스트 -->
         <div class="test-section">
-            <h2>🔧 기본 위젯(3개월) 테스트</h2>
+            <h2>🔧 3개월 버전 위젯 테스트</h2>
             <div class="widget-container">
                 <div
-                    id="basic-widget"
+                    id="three-month-widget"
                     data-graden-widget
                     data-rss-url="https://pearlluck.tistory.com/rss"
-                    data-title="최근 활동"
-                    data-update-interval="43200000"
+                    data-title="3개월 활동 기록"
                     data-show-legend="true"
                     data-show-footer="true">
                 </div>
             </div>
             <div class="code-block">
 &lt;div data-graden-widget
-     data-rss-url="https://pearlluck.tistory.com/rss"
-     data-title="최근 활동"
-     data-update-interval="43200000"
+     data-rss-url="YOUR_RSS_URL"
+     data-title="YOUR_TITLE"
      data-show-legend="true"
      data-show-footer="true"&gt;
 &lt;/div&gt;
@@ -177,8 +271,8 @@
             </div>
             <div class="code-block">
 &lt;div data-graden-widget-1y
-     data-rss-url="https://pearlluck.tistory.com/rss"
-     data-title="1년 활동 기록"
+     data-rss-url="YOUR_RSS_URL"
+     data-title="YOUR_TITLE"
      data-show-legend="true"
      data-show-footer="true"&gt;
 &lt;/div&gt;
@@ -203,99 +297,118 @@
             <div id="rss-analysis-result" class="status info">
                 RSS 분석 결과가 여기에 표시됩니다.
             </div>
-            <div class="code-block">
-// 프록시 서버를 통한 RSS 분석
-const rssUrl = 'https://pearlluck.tistory.com/rss';
-fetch(`http://localhost:3001/analyze/rss?url=${encodeURIComponent(rssUrl)}`)
-  .then(response => response.json())
-  .then(data => console.log('날짜별 게시물 수:', data));
-            </div>
         </div>
     </div>
 
-    <!-- 로컬에서 Activity Widget 로드 (변경사항 테스트용) -->
-    <script src="blog-garden-widget.js?v=20250818"></script>
-    <script src="blog-garden-widget-1y.js?v=20250818"></script>
+    <!-- 위젯 라이브러리 로드 -->
+    <script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"></script>
+    <script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"></script>
     
     <script>
-        // 스크립트 로딩 상태 확인
-        console.log('3개월 버전 위젯 로드 상태:', typeof GradenWidget !== 'undefined' ? '성공' : '실패');
-        console.log('1년 버전 위젯 로드 상태:', typeof GradenWidget1Y !== 'undefined' ? '성공' : '실패');
+        let currentWidgets = {
+            threeMonth: null,
+            yearly: null
+        };
         
-        let programmaticWidget = null;
+        // RSS URL 설정 함수
+        function setRssUrl(url) {
+            document.getElementById('rss-url-input').value = url;
+            updateWidgets();
+        }
+        
+        // 위젯 업데이트 함수
+        function updateWidgets() {
+            const rssUrl = document.getElementById('rss-url-input').value;
+            const title = document.getElementById('widget-title-input').value;
+            
+            if (!rssUrl) {
+                alert('RSS URL을 입력해주세요.');
+                return;
+            }
+            
+            // 기존 위젯 제거
+            destroyCurrentWidgets();
+            
+            // 3개월 버전 위젯 생성
+            const threeMonthContainer = document.getElementById('three-month-widget');
+            threeMonthContainer.innerHTML = '';
+            threeMonthContainer.setAttribute('data-rss-url', rssUrl);
+            threeMonthContainer.setAttribute('data-title', title);
+            
+            if (typeof GradenWidget !== 'undefined') {
+                currentWidgets.threeMonth = new GradenWidget(threeMonthContainer, {
+                    rssUrl: rssUrl,
+                    title: title,
+                    showLegend: true,
+                    showFooter: true
+                });
+                updateTestResults('3개월 버전 위젯 생성', '성공');
+            } else {
+                updateTestResults('3개월 버전 위젯 생성', '실패: GradenWidget 클래스 없음');
+            }
+            
+            // 1년 버전 위젯 생성
+            const yearlyContainer = document.getElementById('yearly-widget');
+            yearlyContainer.innerHTML = '';
+            yearlyContainer.setAttribute('data-rss-url', rssUrl);
+            yearlyContainer.setAttribute('data-title', title);
+            
+            if (typeof GradenWidget1Y !== 'undefined') {
+                currentWidgets.yearly = new GradenWidget1Y(yearlyContainer, {
+                    rssUrl: rssUrl,
+                    title: title,
+                    showLegend: true,
+                    showFooter: true
+                });
+                updateTestResults('1년 버전 위젯 생성', '성공');
+            } else {
+                updateTestResults('1년 버전 위젯 생성', '실패: GradenWidget1Y 클래스 없음');
+            }
+            
+            // 코드 블록 업데이트
+            updateCodeBlocks(rssUrl, title);
+        }
+        
+        // 기존 위젯 제거
+        function destroyCurrentWidgets() {
+            if (currentWidgets.threeMonth && currentWidgets.threeMonth.destroy) {
+                currentWidgets.threeMonth.destroy();
+                currentWidgets.threeMonth = null;
+            }
+            if (currentWidgets.yearly && currentWidgets.yearly.destroy) {
+                currentWidgets.yearly.destroy();
+                currentWidgets.yearly = null;
+            }
+        }
+        
+        // 코드 블록 업데이트
+        function updateCodeBlocks(rssUrl, title) {
+            const codeBlocks = document.querySelectorAll('.code-block');
+            codeBlocks.forEach(block => {
+                let html = block.innerHTML;
+                html = html.replace(/YOUR_RSS_URL/g, rssUrl);
+                html = html.replace(/YOUR_TITLE/g, title);
+                block.innerHTML = html;
+            });
+        }
         
         // CDN 로드 상태 확인
         window.addEventListener('load', function() {
             setTimeout(() => {
-                if (typeof GradenWidget !== 'undefined') {
+                if (typeof GradenWidget !== 'undefined' && typeof GradenWidget1Y !== 'undefined') {
                     document.getElementById('cdn-status').className = 'status success';
-                    document.getElementById('cdn-status').textContent = '✅ CDN 로드 성공! GradenWidget 클래스를 사용할 수 있습니다.';
+                    document.getElementById('cdn-status').textContent = '✅ CDN 로드 성공! 모든 위젯 클래스를 사용할 수 있습니다.';
                     updateTestResults('CDN 로드', '성공');
+                    
+                    // 초기 위젯 생성
+                    updateWidgets();
                 } else {
                     document.getElementById('cdn-status').className = 'status error';
-                    document.getElementById('cdn-status').textContent = '❌ CDN 로드 실패! GradenWidget 클래스를 찾을 수 없습니다.';
+                    document.getElementById('cdn-status').textContent = '❌ CDN 로드 실패! 일부 위젯 클래스를 찾을 수 없습니다.';
                     updateTestResults('CDN 로드', '실패');
                 }
             }, 2000);
         });
-
-        // 프로그래밍 방식 위젯 테스트
-        function createWidget() {
-            try {
-                if (typeof GradenWidget === 'undefined') {
-                    alert('GradenWidget 클래스를 찾을 수 없습니다. CDN 로드를 확인해주세요.');
-                    return;
-                }
-                
-                programmaticWidget = new GradenWidget('#programmatic-widget', {
-                    rssUrl: 'https://pearlluck.tistory.com/rss',
-                    title: '테스트 위젯'
-                });
-                
-                document.getElementById('update-btn').disabled = false;
-                document.getElementById('change-btn').disabled = false;
-                document.getElementById('destroy-btn').disabled = false;
-                
-                updateTestResults('위젯 생성', '성공');
-            } catch (error) {
-                updateTestResults('위젯 생성', '실패: ' + error.message);
-            }
-        }
-
-        function updateWidget() {
-            if (programmaticWidget) {
-                programmaticWidget.update().then(() => {
-                    updateTestResults('데이터 업데이트', '성공');
-                }).catch(error => {
-                    updateTestResults('데이터 업데이트', '실패: ' + error.message);
-                });
-            }
-        }
-
-        function changeTitle() {
-            if (programmaticWidget) {
-                programmaticWidget.setOptions({
-                    title: '제목이 변경되었습니다! (' + new Date().toLocaleTimeString() + ')'
-                });
-                updateTestResults('제목 변경', '성공');
-            }
-        }
-
-        function destroyWidget() {
-            if (programmaticWidget) {
-                programmaticWidget.destroy();
-                programmaticWidget = null;
-                
-                document.getElementById('programmatic-widget').innerHTML = 
-                    '<p style="text-align: center; color: #666;">위젯이 제거되었습니다.</p>';
-                
-                document.getElementById('update-btn').disabled = true;
-                document.getElementById('change-btn').disabled = true;
-                document.getElementById('destroy-btn').disabled = true;
-                
-                updateTestResults('위젯 제거', '성공');
-            }
-        }
 
         function updateTestResults(test, result) {
             const resultsDiv = document.getElementById('test-results');
@@ -309,106 +422,21 @@ fetch(`http://localhost:3001/analyze/rss?url=${encodeURIComponent(rssUrl)}`)
             }
         }
 
-        // 자동 테스트 실행
-        setTimeout(() => {
-            if (typeof GradenWidget !== 'undefined') {
-                updateTestResults('자동 테스트', 'GradenWidget 클래스 로드 확인됨');
-            }
-        }, 3000);
-
-        // 두 버전 위젯 자동 초기화
-        function initializeWidgets() {
-            console.log('위젯 초기화 시작...');
-            console.log('GradenWidget 클래스 상태:', typeof GradenWidget);
-            console.log('GradenWidget1Y 클래스 상태:', typeof GradenWidget1Y);
-            
-            // 3개월 버전 위젯 초기화
-            const threeMonthWidgets = document.querySelectorAll('[data-graden-widget]');
-            console.log('3개월 버전 위젯 개수:', threeMonthWidgets.length);
-            threeMonthWidgets.forEach(container => {
-                if (typeof GradenWidget !== 'undefined') {
-                    const options = {
-                        rssUrl: container.getAttribute('data-rss-url') || 'https://pearlluck.tistory.com/rss',
-                        title: container.getAttribute('data-title') || '3개월 활동 기록',
-                        updateInterval: parseInt(container.getAttribute('data-update-interval')) || 86400000,
-                        showLegend: container.getAttribute('data-show-legend') !== 'false',
-                        showFooter: container.getAttribute('data-show-footer') !== 'false'
-                    };
-                    
-                    new GradenWidget(container, options);
-                    updateTestResults('3개월 버전 위젯 초기화', '성공');
-                } else {
-                    console.error('GradenWidget 클래스를 찾을 수 없습니다.');
-                    updateTestResults('3개월 버전 위젯 초기화', '실패: GradenWidget 클래스 없음');
-                }
-            });
-
-            // 1년 버전 위젯 초기화
-            const yearlyWidgets = document.querySelectorAll('[data-graden-widget-1y]');
-            console.log('1년 버전 위젯 개수:', yearlyWidgets.length);
-            yearlyWidgets.forEach(container => {
-                console.log('1년 버전 위젯 컨테이너:', container);
-                if (typeof GradenWidget1Y !== 'undefined') {
-                    console.log('GradenWidget1Y 클래스 발견');
-                    const options = {
-                        rssUrl: container.getAttribute('data-rss-url') || 'https://pearlluck.tistory.com/rss',
-                        title: container.getAttribute('data-title') || '1년 활동 기록',
-                        updateInterval: parseInt(container.getAttribute('data-update-interval')) || 86400000,
-                        showLegend: container.getAttribute('data-show-legend') !== 'false',
-                        showFooter: container.getAttribute('data-show-footer') !== 'false'
-                    };
-                    
-                    console.log('1년 버전 위젯 옵션:', options);
-                    new GradenWidget1Y(container, options);
-                    updateTestResults('1년 버전 위젯 초기화', '성공');
-                } else {
-                    console.error('GradenWidget1Y 클래스를 찾을 수 없습니다.');
-                    updateTestResults('1년 버전 위젯 초기화', '실패: GradenWidget1Y 클래스 없음');
-                    
-                    // 1년 버전 위젯 클래스가 없을 경우 3개월 버전으로 대체
-                    if (typeof GradenWidget !== 'undefined') {
-                        console.log('GradenWidget1Y 대신 GradenWidget 사용');
-                        const options = {
-                            rssUrl: container.getAttribute('data-rss-url') || 'https://pearlluck.tistory.com/rss',
-                            title: container.getAttribute('data-title') || '1년 활동 기록 (3개월 버전)',
-                            updateInterval: parseInt(container.getAttribute('data-update-interval')) || 86400000,
-                            showLegend: container.getAttribute('data-show-legend') !== 'false',
-                            showFooter: container.getAttribute('data-show-footer') !== 'false'
-                        };
-                        
-                        new GradenWidget(container, options);
-                        updateTestResults('1년 버전 위젯 초기화', '3개월 버전으로 대체됨');
-                    }
-                }
-            });
-        }
-
-        // 스크립트 로딩 상태를 지속적으로 확인하고 위젯 초기화
-        function checkAndInitialize() {
-            if (typeof GradenWidget !== 'undefined' && typeof GradenWidget1Y !== 'undefined') {
-                console.log('모든 위젯 클래스가 로드되었습니다. 초기화를 시작합니다.');
-                initializeWidgets();
-            } else {
-                console.log('일부 위젯 클래스가 아직 로드되지 않았습니다. 1초 후 다시 시도합니다.');
-                setTimeout(checkAndInitialize, 1000);
-            }
-        }
-
-        // 페이지 로드 후 위젯 초기화
-        window.addEventListener('load', function() {
-            console.log('페이지 로드 완료. 위젯 클래스 확인 중...');
-            setTimeout(checkAndInitialize, 1000);
-        });
-
-        // RSS 분석 테스트 함수들
+        // RSS 분석 테스트
         async function testRssAnalysis() {
             const resultDiv = document.getElementById('rss-analysis-result');
+            const rssUrl = document.getElementById('rss-url-input').value;
+            
+            if (!rssUrl) {
+                alert('RSS URL을 입력해주세요.');
+                return;
+            }
+            
             resultDiv.className = 'status info';
             resultDiv.textContent = 'RSS 분석 중...';
             
             try {
-                const rssUrl = 'https://pearlluck.tistory.com/rss';
-                const response = await fetch(`http://localhost:3001/analyze/rss?url=${encodeURIComponent(rssUrl)}`);
+                const response = await fetch(`https://blog-graden.vercel.app/analyze/rss?url=${encodeURIComponent(rssUrl)}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -437,78 +465,14 @@ fetch(`http://localhost:3001/analyze/rss?url=${encodeURIComponent(rssUrl)}`)
             }
         }
 
-        // 1년 버전 위젯 수동 생성
-        function createYearlyWidget() {
-            const container = document.getElementById('yearly-widget');
-            if (!container) {
-                alert('1년 버전 위젯 컨테이너를 찾을 수 없습니다.');
-                return;
-            }
-            
-            container.innerHTML = ''; // 기존 내용 제거
-            
-            if (typeof GradenWidget1Y !== 'undefined') {
-                const yearlyWidget = new GradenWidget1Y(container, {
-                    rssUrl: 'https://pearlluck.tistory.com/rss',
-                    title: '1년 활동 기록 (수동 생성)',
-                    showLegend: true,
-                    showFooter: true
-                });
-                
-                // 전역 변수로 저장
-                window.yearlyWidget = yearlyWidget;
-                updateTestResults('1년 버전 위젯 수동 생성', '성공');
-                alert('1년 버전 위젯이 성공적으로 생성되었습니다!');
-            } else {
-                updateTestResults('1년 버전 위젯 수동 생성', '실패: GradenWidget1Y 클래스 없음');
-                alert('GradenWidget1Y 클래스를 찾을 수 없습니다. 3개월 버전으로 생성합니다.');
-                
-                // 3개월 버전으로 대체
-                if (typeof GradenWidget !== 'undefined') {
-                    const monthlyWidget = new GradenWidget(container, {
-                        rssUrl: 'https://pearlluck.tistory.com/rss',
-                        title: '1년 활동 기록 (3개월 버전)',
-                        showLegend: true,
-                        showFooter: true
-                    });
-                    
-                    window.yearlyWidget = monthlyWidget;
-                    updateTestResults('1년 버전 위젯 수동 생성', '3개월 버전으로 대체됨');
-                    alert('3개월 버전 위젯이 생성되었습니다.');
-                }
-            }
-        }
-
-        // 1년 버전 위젯 테스트
-        function testYearlyWidget() {
-            if (window.yearlyWidget) {
-                console.log('1년 버전 위젯 인스턴스:', window.yearlyWidget);
-                console.log('위젯 옵션:', window.yearlyWidget.options);
-                
-                // 그리드 정보 확인
-                const gridContainer = window.yearlyWidget.container.querySelector('.activity-grid');
-                if (gridContainer) {
-                    const weekColumns = gridContainer.querySelectorAll('.week-column');
-                    console.log('주(Week) 개수:', weekColumns.length);
-                    console.log('총 그리드 셀 개수:', weekColumns.length * 7);
-                    
-                    updateTestResults('1년 버전 위젯 테스트', `주: ${weekColumns.length}개, 셀: ${weekColumns.length * 7}개`);
-                } else {
-                    updateTestResults('1년 버전 위젯 테스트', '그리드 컨테이너를 찾을 수 없음');
-                }
-            } else {
-                updateTestResults('1년 버전 위젯 테스트', '위젯이 생성되지 않음');
-                alert('먼저 1년 버전 위젯을 생성해주세요.');
-            }
-        }
-
+        // 프록시 서버 상태 확인
         async function testProxyServer() {
             const resultDiv = document.getElementById('rss-analysis-result');
             resultDiv.className = 'status info';
             resultDiv.textContent = '프록시 서버 상태 확인 중...';
             
             try {
-                const response = await fetch('http://localhost:3001/health');
+                const response = await fetch('https://blog-graden.vercel.app/health');
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -529,7 +493,7 @@ fetch(`http://localhost:3001/analyze/rss?url=${encodeURIComponent(rssUrl)}`)
                 resultDiv.innerHTML = `
                     <strong>❌ 프록시 서버 연결 실패!</strong><br>
                     <strong>에러:</strong> ${error.message}<br>
-                    <strong>프록시 서버를 실행해주세요: node proxy-server.js</strong>
+                    <strong>프록시 서버를 확인해주세요.</strong>
                 `;
                 
                 updateTestResults('프록시 서버 상태', '실패: ' + error.message);
