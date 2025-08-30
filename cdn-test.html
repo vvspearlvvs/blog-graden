@@ -343,6 +343,14 @@
             margin: 15px 0;
         }
         
+        .widget-container-3m {
+            min-height: 200px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
         .widget-container-1y {
             min-height: 200px;
             background: white;
@@ -555,7 +563,7 @@
             <div class="step-header">
                 <div class="step-title">
                     <span class="step-number">4</span>
-                    위젯 로드 상태 확인
+                    위젯 라이브러리 상태 확인
                 </div>
                 <div class="step-status status-pending" id="status-4">
                     <span>대기 중</span>
@@ -592,7 +600,7 @@
                     <div id="code-3m-data-content"></div>
                 </div>
                 
-                <h4 style="margin-top: 15px; color: #4a5568; font-size: 16px;">🔧 방식 2: JavaScript 직접 호출</h4>
+                <h4 style="margin-top: 15px; color: #4a5568; font-size: 16px;">🔧 방식 2: JavaScript 코드</h4>
                 <div class="code-snippet" id="code-3m-js">
                     <button class="copy-button" onclick="copyCode('code-3m-js-content')">복사</button>
                     <div id="code-3m-js-content"></div>
@@ -608,7 +616,7 @@
                     <div id="code-1y-data-content"></div>
                 </div>
                 
-                <h4 style="margin-top: 15px; color: #4a5568; font-size: 16px;">🔧 방식 2: JavaScript 직접 호출</h4>
+                <h4 style="margin-top: 15px; color: #4a5568; font-size: 16px;">🔧 방식 2: JavaScript 코드</h4>
                 <div class="code-snippet" id="code-1y-js">
                     <button class="copy-button" onclick="copyCode('code-1y-js-content')">복사</button>
                     <div id="code-1y-js-content"></div>
@@ -632,15 +640,23 @@
             </div>
             <div class="step-result" id="result-6" style="display: none;"></div>
             <div class="widget-preview" id="widget-custom-preview" style="display: none;">
-                <h3>🎨 커스텀 위젯 예시</h3>
-                <p style="color: #4a5568; margin-bottom: 20px;">커스터마이징된 1년 위젯입니다. JavaScript 방식에서 title,showLegend,colors 옵션을 직접 변경할 수 있습니다.</p>
-                <div class="widget-container-1y" id="widget-custom"></div>
+                <h3>🎨 3개월 커스텀 위젯</h3>
+                <div class="widget-container-3m" id="widget-custom-3m"></div>
+                
+                <h4 style="margin-top: 20px; color: #4a5568; font-size: 16px;">🔧 JavaScript 코드</h4>
+                <div class="code-snippet" id="code-custom-3m">
+                    <button class="copy-button" onclick="copyCode('code-custom-3m-content')">복사</button>
+                    <div id="code-custom-3m-content"></div>
+                </div>
+
+                <h3 style="margin-top: 30px;">🎨 1년 커스텀 위젯</h3>
+                <div class="widget-container-1y" id="widget-custom-1y"></div>
                 <div class="help-text" style="margin-top: 10px;">← 좌우로 스크롤하여 전체 위젯을 확인하세요</div>
                 
-                <h4 style="margin-top: 20px; color: #4a5568; font-size: 16px;">🎨 커스텀 위젯 JavaScript 코드</h4>
-                <div class="code-snippet" id="code-custom">
-                    <button class="copy-button" onclick="copyCode('code-custom-content')">복사</button>
-                    <div id="code-custom-content"></div>
+                <h4 style="margin-top: 20px; color: #4a5568; font-size: 16px;">🔧 JavaScript 코드</h4>
+                <div class="code-snippet" id="code-custom-1y">
+                    <button class="copy-button" onclick="copyCode('code-custom-1y-content')">복사</button>
+                    <div id="code-custom-1y-content"></div>
                 </div>
             </div>
         </div>
@@ -648,9 +664,10 @@
         </div>
     </div>
 
-    <!-- 위젯 라이브러리 로드 -->
-    <script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"></script>
-    <script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"></script>
+    <!-- 위젯 라이브러리 로드 (로컬 테스트용) -->
+    <script src="./blog-garden-widget.js"></script>
+    <script src="./blog-garden-widget-1y.js"></script>
+    <script src="./blog-garden-widget-3m.js"></script>
     
     <script>
         let currentBlogUrl = '';
@@ -1036,8 +1053,8 @@
             
             try {
                 // CDN 로드 상태 재확인
-                if (typeof GradenWidget1Y === 'undefined') {
-                    throw new Error('GradenWidget1Y 클래스가 로드되지 않았습니다.');
+                if (typeof GradenWidget3M === 'undefined' || typeof GradenWidget1Y === 'undefined') {
+                    throw new Error('GradenWidget3M 또는 GradenWidget1Y 클래스가 로드되지 않았습니다.');
                 }
                 
                 // RSS URL 확인
@@ -1053,16 +1070,16 @@
                     throw new Error('widget-custom-preview 요소를 찾을 수 없습니다.');
                 }
                 
-                // 커스텀 색상 위젯 생성
-                const widgetCustom = document.getElementById('widget-custom');
-                if (!widgetCustom) {
-                    throw new Error('widget-custom 요소를 찾을 수 없습니다.');
+                // 3개월 커스텀 색상 위젯 생성
+                const widgetCustom3M = document.getElementById('widget-custom-3m');
+                if (!widgetCustom3M) {
+                    throw new Error('widget-custom-3m 요소를 찾을 수 없습니다.');
                 }
-                widgetCustom.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">커스텀 위젯 로딩 중...</div>';
+                widgetCustom3M.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">3개월 커스텀 위젯 로딩 중...</div>';
                 
                 try {
-                    console.log('커스텀 위젯 생성 시도:', { rssUrl: currentRssUrl, blogUrl: currentBlogUrl });
-                    new GradenWidget1Y(widgetCustom, {
+                    console.log('3개월 커스텀 위젯 생성 시도:', { rssUrl: currentRssUrl, blogUrl: currentBlogUrl });
+                    new GradenWidget3M(widgetCustom3M, {
                         rssUrl: currentRssUrl,
                         title: `블로그 포도`,
                         showLegend: true,
@@ -1074,10 +1091,37 @@
                             4: '#4c1d95'  
                         }
                     });
-                    console.log('커스텀 위젯 생성 성공');
+                    console.log('3개월 커스텀 위젯 생성 성공');
                 } catch (widgetError) {
-                    console.error('커스텀 위젯 생성 실패:', widgetError);
-                    widgetCustom.innerHTML = `<div style="color: #e53e3e; padding: 20px; text-align: center;">커스텀 위젯 생성 실패: ${widgetError.message}</div>`;
+                    console.error('3개월 커스텀 위젯 생성 실패:', widgetError);
+                    widgetCustom3M.innerHTML = `<div style="color: #e53e3e; padding: 20px; text-align: center;">3개월 커스텀 위젯 생성 실패: ${widgetError.message}</div>`;
+                }
+
+                // 1년 커스텀 색상 위젯 생성
+                const widgetCustom1Y = document.getElementById('widget-custom-1y');
+                if (!widgetCustom1Y) {
+                    throw new Error('widget-custom-1y 요소를 찾을 수 없습니다.');
+                }
+                widgetCustom1Y.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">1년 커스텀 위젯 로딩 중...</div>';
+                
+                try {
+                    console.log('1년 커스텀 위젯 생성 시도:', { rssUrl: currentRssUrl, blogUrl: currentBlogUrl });
+                    new GradenWidget1Y(widgetCustom1Y, {
+                        rssUrl: currentRssUrl,
+                        title: `블로그 포도 (1년)`,
+                        showLegend: true,
+                        colors: {
+                            0: '#ede9fe',  
+                            1: '#c4b5fd', 
+                            2: '#a99be9', 
+                            3: '#7c3aed',  
+                            4: '#4c1d95'  
+                        }
+                    });
+                    console.log('1년 커스텀 위젯 생성 성공');
+                } catch (widgetError) {
+                    console.error('1년 커스텀 위젯 생성 실패:', widgetError);
+                    widgetCustom1Y.innerHTML = `<div style="color: #e53e3e; padding: 20px; text-align: center;">1년 커스텀 위젯 생성 실패: ${widgetError.message}</div>`;
                 }
                 
                 updateStepStatus(6, 'completed', '');
@@ -1097,17 +1141,12 @@ new GradenWidget(document.getElementById('blog-garden-widget'), {
     rssUrl: '${currentRssUrl}',
     title: '활동 기록',
     showLegend: true,
-    showFooter: true
 });
 <\/script>`;
 
              // 3개월 위젯 - 데이터 속성 방식
              const code3mData = `<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"><\/script>
-<div data-graden-widget
-     data-rss-url="${currentRssUrl}"
-     data-title="활동 기록"
-     data-show-legend="true"
-     data-show-footer="true">
+<div data-graden-widget data-rss-url="${currentRssUrl}">
 </div>`;
 
              // 1년 위젯 - JavaScript 방식
@@ -1118,28 +1157,40 @@ new GradenWidget1Y(document.getElementById('blog-garden-widget-1y'), {
     rssUrl: '${currentRssUrl}',
     title: '1년 활동 기록',
     showLegend: true,
-    showFooter: true
 });
 <\/script>`;
 
              // 1년 위젯 - 데이터 속성 방식
              const code1yData = `<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"><\/script>
-<div data-graden-widget-1y
-     data-rss-url="${currentRssUrl}"
-     data-title="1년 활동 기록"
-     data-show-legend="true"
-     data-show-footer="true">
+<div data-graden-widget-1y data-rss-url="${currentRssUrl}">
 </div>`;
 
-             // 커스텀 색상 위젯 코드
-             const codeCustom = `<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"><\/script>
+             // 커스텀 색상 3개월 위젯 코드
+             const code3mCustom = `<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-3m.js"><\/script>
+<div id="blog-garden-widget-3m"><\/div>
+<script>
+new GradenWidget3M(document.getElementById('blog-garden-widget-3m'), {
+    rssUrl: '${currentRssUrl}',
+    title: '블로그 포도 (3개월)',
+    showLegend: true,
+    colors: {
+        0: '#ede9fe',  
+        1: '#c4b5fd', 
+        2: '#a99be9',  
+        3: '#7c3aed',  
+        4: '#4c1d95'  
+    }
+});
+<\/script>`;
+
+             // 커스텀 색상 1년 위젯 코드
+             const code1yCustom = `<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"><\/script>
 <div id="blog-garden-widget-1y"><\/div>
 <script>
 new GradenWidget1Y(document.getElementById('blog-garden-widget-1y'), {
     rssUrl: '${currentRssUrl}',
-    title: '블로그 포도',
+    title: '블로그 포도 (1년)',
     showLegend: true,
-    showFooter: true,
     colors: {
         0: '#ede9fe',  
         1: '#c4b5fd', 
@@ -1155,7 +1206,8 @@ new GradenWidget1Y(document.getElementById('blog-garden-widget-1y'), {
              document.getElementById('code-3m-data-content').textContent = code3mData;
              document.getElementById('code-1y-js-content').textContent = code1yJs;
              document.getElementById('code-1y-data-content').textContent = code1yData;
-             document.getElementById('code-custom-content').textContent = codeCustom;
+             document.getElementById('code-custom-3m-content').textContent = code3mCustom;
+             document.getElementById('code-custom-1y-content').textContent = code1yCustom;
          }
         
         // 코드 복사

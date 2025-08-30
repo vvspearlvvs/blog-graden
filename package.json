@@ -40,6 +40,7 @@
   "files": [
     "blog-garden-widget.js",
     "blog-garden-widget-1y.js",
+    "blog-garden-widget-3m.js",
     "README.md",
     "CHANGELOG.md",
     "proxy-server.js",
