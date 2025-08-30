@@ -1,6 +1,6 @@
 {
   "name": "blog-garden-widget",
-  "version": "1.3.1",
+  "version": "2.0.0",
   "description": "GitHub style blog activity visualization widget with RSS feed support, deployed proxy server integration, and enhanced customization options for multiple users",
   "main": "blog-garden-widget.js",
   "scripts": {
