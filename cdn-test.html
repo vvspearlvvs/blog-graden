@@ -3,300 +3,648 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Garden Widget 테스트 페이지</title>
+    <title>Blog Activity Widget 테스트 - 내 블로그에 위젯 적용하기</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f6f8fa;
-            margin: 0;
-            padding: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             line-height: 1.6;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .blog-input-section {
             background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .blog-input-section h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            color: #4a5568;
+            min-width: 120px;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            padding: 32px;
-        }
-        
-        h1 {
-            color: #24292f;
-            margin-bottom: 8px;
-            font-size: 28px;
-        }
-        
-        .subtitle {
-            color: #656d76;
-            margin-bottom: 32px;
             font-size: 16px;
+            min-width: 300px;
+            transition: border-color 0.3s;
         }
         
-        .test-section {
-            margin-bottom: 40px;
-            padding: 24px;
-            border: 1px solid #e1e4e8;
-            border-radius: 6px;
-            background: #fafbfc;
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
         }
         
-        .test-section h2 {
-            color: #24292f;
-            margin-top: 0;
-            margin-bottom: 16px;
-            font-size: 20px;
-        }
-        
-        .widget-container {
-            border: 2px dashed #d0d7de;
+        .btn {
+            padding: 12px 24px;
+            border: none;
             border-radius: 8px;
-            padding: 20px;
-            min-height: 200px;
-            background: white;
-            margin: 16px 0;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         
-        .code-block {
-            background: #f6f8fa;
-            border: 1px solid #e1e4e8;
-            border-radius: 6px;
-            padding: 16px;
-            margin: 16px 0;
-            overflow-x: auto;
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+        
+        .test-step {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-left: 6px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+        
+        .test-step.completed {
+            border-left-color: #48bb78;
+            background: linear-gradient(135deg, #f0fff4 0%, #f7fafc 100%);
+        }
+        
+        .test-step.error {
+            border-left-color: #f56565;
+            background: linear-gradient(135deg, #fed7d7 0%, #f7fafc 100%);
+        }
+        
+        .test-step.testing {
+            border-left-color: #ed8936;
+            background: linear-gradient(135deg, #fef5e7 0%, #f7fafc 100%);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .step-title {
+            color: #2d3748;
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        
+        .test-step.completed .step-number {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .test-step.error .step-number {
+            background: #f56565;
+            color: white;
+        }
+        
+        .test-step.testing .step-number {
+            background: #ed8936;
+            color: white;
+        }
+        
+        .step-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .status-pending {
+            background: #edf2f7;
+            color: #4a5568;
+        }
+        
+        .status-testing {
+            background: #fef5e7;
+            color: #c05621;
+        }
+        
+        .status-success {
+            background: #f0fff4;
+            color: #276749;
+        }
+        
+        .status-error {
+            background: #fed7d7;
+            color: #c53030;
+        }
+        
+        .step-content {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .step-result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
             font-size: 14px;
         }
         
-        .status {
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin: 16px 0;
-            font-weight: 500;
-        }
-        
-        .status.success {
-            background: #dafbe1;
-            color: #1a7f37;
-            border: 1px solid #4ac26b;
-        }
-        
-        .status.error {
-            background: #ffebe9;
-            color: #cf222e;
-            border: 1px solid #ff8182;
-        }
-        
-        .status.info {
-            background: #f1f8ff;
-            color: #0969da;
-            border: 1px solid #79c0ff;
-        }
-        
-        .test-buttons {
-            margin: 16px 0;
-        }
-        
-        .test-buttons button {
-            background: #0969da;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-right: 8px;
-            font-size: 14px;
-        }
-        
-        .test-buttons button:hover {
-            background: #0858b9;
-        }
-        
-        .test-buttons button:disabled {
-            background: #656d76;
-            cursor: not-allowed;
-        }
-        
-        .rss-input-section {
-            background: #f1f8ff;
-            border: 1px solid #79c0ff;
-            border-radius: 6px;
-            padding: 20px;
+        .result-success {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            border-left: 4px solid #38a169;
+            color: #22543d;
             margin: 20px 0;
+            padding: 20px 24px;
+            border-radius: 8px;
+            line-height: 1.6;
+            box-shadow: 0 2px 4px rgba(56, 161, 105, 0.08);
         }
         
-        .rss-input-group {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-        
-        .rss-input-group label {
+        .result-success strong {
+            color: #1a202c;
             font-weight: 600;
-            color: #24292f;
-            min-width: 120px;
         }
         
-        .rss-input-group input {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #d0d7de;
-            border-radius: 6px;
+        .result-success small {
+            color: #4a5568;
+            font-size: 13px;
+            margin-top: 8px;
+            display: block;
+        }
+        
+        .result-success a {
+            color: #2b6cb0 !important;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px dotted #2b6cb0;
+            word-break: break-all;
+            transition: all 0.2s ease;
+            padding: 1px 2px;
+        }
+        
+        .result-success a:hover {
+            background: #bee3f8;
+            border-bottom: 1px solid #2b6cb0;
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+        
+        .result-error {
+            background: #fed7d7;
+            border: 1px solid #feb2b2;
+            border-left: 4px solid #e53e3e;
+            color: #742a2a;
+            margin: 20px 0;
+            padding: 20px 24px;
+            border-radius: 8px;
+            line-height: 1.6;
+            box-shadow: 0 2px 4px rgba(229, 62, 62, 0.08);
+        }
+        
+        .result-error strong {
+            color: #1a202c;
+            font-weight: 600;
+        }
+        
+        .result-error a {
+            color: #2b6cb0 !important;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px dotted #2b6cb0;
+            word-break: break-all;
+            transition: all 0.2s ease;
+            padding: 1px 2px;
+        }
+        
+        .result-error a:hover {
+            background: #bee3f8;
+            border-bottom: 1px solid #2b6cb0;
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+        
+        .result-info {
+            background: #ebf8ff;
+            border: 1px solid #90cdf4;
+            border-left: 4px solid #3182ce;
+            color: #2a4365;
+            margin: 20px 0;
+            padding: 20px 24px;
+            border-radius: 8px;
+            line-height: 1.6;
+            box-shadow: 0 2px 4px rgba(49, 130, 206, 0.08);
+        }
+        
+        .result-info strong {
+            color: #1a202c;
+            font-weight: 600;
+        }
+        
+        .widget-preview {
+            margin-top: 25px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 2px dashed #cbd5e0;
+            overflow: hidden;
+        }
+        
+        .widget-container {
+            min-height: 200px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .widget-container-1y {
+            min-height: 200px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+        }
+        
+        .widget-container-1y::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .widget-container-1y::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .widget-container-1y::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        .widget-container-1y::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        .code-snippet {
+            margin-top: 20px;
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'SFMono-Regular', Consolas, monospace;
             font-size: 14px;
-            min-width: 300px;
+            overflow-x: auto;
+            position: relative;
         }
         
-        .rss-input-group button {
-            background: #2da44e;
+        .copy-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #4a5568;
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
             cursor: pointer;
-            font-size: 14px;
-            white-space: nowrap;
+            transition: background 0.3s;
         }
         
-        .rss-input-group button:hover {
-            background: #2c974b;
+        .copy-button:hover {
+            background: #2d3748;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 30px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        .help-text {
+            font-size: 14px;
+            color: #718096;
+            margin-top: 10px;
         }
         
         .example-urls {
-            margin-top: 16px;
-            padding: 12px;
-            background: white;
-            border-radius: 4px;
-            border: 1px solid #e1e4e8;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
         }
         
         .example-urls h4 {
-            margin: 0 0 8px 0;
-            color: #24292f;
+            margin: 0 0 10px 0;
+            color: #2d3748;
             font-size: 14px;
         }
         
         .example-urls ul {
             margin: 0;
             padding-left: 20px;
-            color: #656d76;
+            color: #4a5568;
             font-size: 13px;
         }
         
         .example-urls li {
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
         
         .example-urls a {
-            color: #0969da;
+            color: #667eea;
             text-decoration: none;
+            cursor: pointer;
         }
         
         .example-urls a:hover {
-            text-decoration: underline;
+            
         }
+        
+        .loading-typing::after {
+            content: '';
+            animation: typing 1.5s steps(3) infinite;
+        }
+
+        @keyframes typing {
+            0% { content: ''; }
+            33% { content: '.'; }
+            66% { content: '..'; }
+            100% { content: '...'; }
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎯 Blog Garden Widget 테스트 페이지</h1>
-        <div class="subtitle">
-            사용자가 직접 RSS URL을 입력하여 위젯을 테스트할 수 있는 페이지입니다.
+        <!-- 헤더 -->
+        <div class="header">
+            <h1>🎯 Blog Activity Widget 테스트</h1>
+            <p>내 블로그에 위젯을 적용하기 전에 미리 테스트해보세요</p>
         </div>
 
-        <!-- RSS URL 입력 섹션 -->
-        <div class="rss-input-section">
-            <h2>📡 RSS URL 설정</h2>
-            <div class="rss-input-group">
-                <label for="rss-url-input">RSS URL:</label>
-                <input type="url" id="rss-url-input" placeholder="https://your-blog.com/rss" value="https://pearlluck.tistory.com/rss">
-                <button onclick="updateWidgets()">위젯 업데이트</button>
+        <!-- 블로그 주소 입력 -->
+        <div class="blog-input-section">
+            <h2>🌐 블로그 주소 입력</h2>
+            <div class="input-group">
+                <label for="blog-url">블로그 URL:</label>
+                <input type="url" id="blog-url" placeholder="https://your-blog.com" value="">
+                <button class="btn btn-primary" onclick="startTest()">테스트 시작</button>
             </div>
-            <div class="rss-input-group">
-                <label for="widget-title-input">위젯 제목:</label>
-                <input type="text" id="widget-title-input" placeholder="블로그 활동" value="블로그 활동">
-                <button onclick="updateWidgets()">위젯 업데이트</button>
-            </div>
-        </div>
-
-        <!-- CDN 로드 상태 확인 -->
-        <div class="test-section">
-            <h2>📡 CDN 로드 상태</h2>
-            <div id="cdn-status" class="status info">
-                CDN 로드 상태를 확인 중...
-            </div>
-            <div class="code-block">
-&lt;script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"&gt;&lt;/script&gt;
-&lt;script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"&gt;&lt;/script&gt;
+            <div class="help-text">
+                티스토리 블로그 주소를 입력하면 자동으로 RSS 피드를 찾아 테스트합니다.
             </div>
         </div>
 
-        <!-- 3개월 버전 위젯 테스트 -->
-        <div class="test-section">
-            <h2>🔧 3개월 버전 위젯 테스트</h2>
-            <div class="widget-container">
-                <div
-                    id="three-month-widget"
-                    data-graden-widget
-                    data-rss-url="https://pearlluck.tistory.com/rss"
-                    data-title="3개월 활동 기록"
-                    data-show-legend="true"
-                    data-show-footer="true">
+        <!-- 진행 상황 -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <!-- 1단계: RSS 피드 URL 확인 -->
+        <div class="test-step" id="step-1">
+            <div class="step-header">
+                <div class="step-title">
+                    <span class="step-number">1</span>
+                    RSS 피드 URL 확인
+                </div>
+                <div class="step-status status-pending" id="status-1">
+                    <span>대기 중</span>
                 </div>
             </div>
-            <div class="code-block">
-&lt;div data-graden-widget
-     data-rss-url="YOUR_RSS_URL"
-     data-title="YOUR_TITLE"
-     data-show-legend="true"
-     data-show-footer="true"&gt;
-&lt;/div&gt;
+            <div class="step-content">
+                입력한 블로그 주소에서 RSS 피드 URL을 찾고 접근 가능한지 확인합니다.
             </div>
+            <div class="step-result" id="result-1" style="display: none;"></div>
         </div>
 
-        <!-- 1년 버전 위젯 테스트 -->
-        <div class="test-section">
-            <h2>📅 1년 버전 위젯 테스트</h2>
-            <div class="widget-container">
-                <div
-                    id="yearly-widget"
-                    data-graden-widget-1y
-                    data-rss-url="https://pearlluck.tistory.com/rss"
-                    data-title="1년 활동 기록"
-                    data-show-legend="true"
-                    data-show-footer="true">
+        <!-- 2단계: 프록시 서버 상태 및 요청 확인 -->
+        <div class="test-step" id="step-2">
+            <div class="step-header">
+                <div class="step-title">
+                    <span class="step-number">2</span>
+                    프록시 서버 상태 및 요청 확인
+                </div>
+                <div class="step-status status-pending" id="status-2">
+                    <span>대기 중</span>
                 </div>
             </div>
-            <div class="code-block">
-&lt;div data-graden-widget-1y
-     data-rss-url="YOUR_RSS_URL"
-     data-title="YOUR_TITLE"
-     data-show-legend="true"
-     data-show-footer="true"&gt;
-&lt;/div&gt;
+            <div class="step-content">
+                위젯이 RSS 데이터를 가져오기 위한 프록시 서버가 정상 작동하는지 확인하고, 실제 RSS 데이터를 가져올 수 있는지 테스트합니다.
+            </div>
+            <div class="step-result" id="result-2" style="display: none;"></div>
+        </div>
+
+        <!-- 3단계: RSS 분석 서비스 확인 -->
+        <div class="test-step" id="step-3">
+            <div class="step-header">
+                <div class="step-title">
+                    <span class="step-number">3</span>
+                    RSS 분석 서비스 확인
+                </div>
+                <div class="step-status status-pending" id="status-3">
+                    <span>대기 중</span>
+                </div>
+            </div>
+            <div class="step-content">
+                RSS 피드를 분석하여 날짜별 게시물 수를 계산할 수 있는지 확인합니다.
+            </div>
+            <div class="step-result" id="result-3" style="display: none;"></div>
+        </div>
+
+        <!-- 4단계: 위젯 CDN 로드 상태 확인 -->
+        <div class="test-step" id="step-4">
+            <div class="step-header">
+                <div class="step-title">
+                    <span class="step-number">4</span>
+                    위젯 로드 상태 확인
+                </div>
+                <div class="step-status status-pending" id="status-4">
+                    <span>대기 중</span>
+                </div>
+            </div>
+            <div class="step-content">
+                위젯 라이브러리가 정상적으로 로드되는지 확인합니다.
+            </div>
+            <div class="step-result" id="result-4" style="display: none;"></div>
+        </div>
+
+        <!-- 5단계: 위젯 미리보기 -->
+        <div class="test-step" id="step-5">
+            <div class="step-header">
+                <div class="step-title">
+                    <span class="step-number">5</span>
+                    위젯 미리보기
+                </div>
+                <div class="step-status status-pending" id="status-5">
+                    <span>대기 중</span>
+                </div>
+            </div>
+            <div class="step-content">
+                실제 위젯을 생성하여 미리보기를 제공하고, 블로그에 적용할 수 있는 코드를 제공합니다.
+            </div>
+            <div class="step-result" id="result-5" style="display: none;"></div>
+            <div class="widget-preview" id="widget-preview" style="display: none;">
+                <h3>📅 3개월 버전 위젯</h3>
+                <div class="widget-container" id="widget-3m"></div>
+                
+                <h4 style="margin-top: 20px; color: #4a5568; font-size: 16px;">🏷️ 방식 1: HTML 데이터 속성 (권장)</h4>
+                <div class="code-snippet" id="code-3m-data">
+                    <button class="copy-button" onclick="copyCode('code-3m-data-content')">복사</button>
+                    <div id="code-3m-data-content"></div>
+                </div>
+                
+                <h4 style="margin-top: 15px; color: #4a5568; font-size: 16px;">🔧 방식 2: JavaScript 직접 호출</h4>
+                <div class="code-snippet" id="code-3m-js">
+                    <button class="copy-button" onclick="copyCode('code-3m-js-content')">복사</button>
+                    <div id="code-3m-js-content"></div>
+                </div>
+
+                <h3 style="margin-top: 30px;">📅 1년 버전 위젯</h3>
+                <div class="widget-container-1y" id="widget-1y"></div>
+                <div class="help-text" style="margin-top: 10px;">← 좌우로 스크롤하여 전체 위젯을 확인하세요</div>
+                
+                <h4 style="margin-top: 20px; color: #4a5568; font-size: 16px;">🏷️ 방식 1: HTML 데이터 속성 (권장)</h4>
+                <div class="code-snippet" id="code-1y-data">
+                    <button class="copy-button" onclick="copyCode('code-1y-data-content')">복사</button>
+                    <div id="code-1y-data-content"></div>
+                </div>
+                
+                <h4 style="margin-top: 15px; color: #4a5568; font-size: 16px;">🔧 방식 2: JavaScript 직접 호출</h4>
+                <div class="code-snippet" id="code-1y-js">
+                    <button class="copy-button" onclick="copyCode('code-1y-js-content')">복사</button>
+                    <div id="code-1y-js-content"></div>
+                </div>
             </div>
         </div>
 
-        <!-- 테스트 결과 -->
-        <div class="test-section">
-            <h2>📊 테스트 결과</h2>
-            <div id="test-results" class="status info">
-                테스트를 진행하면 결과가 여기에 표시됩니다.
+        <!-- 6단계: 커스텀 위젯 예시 -->
+        <div class="test-step" id="step-6">
+            <div class="step-header">
+                <div class="step-title">
+                    <span class="step-number">6</span>
+                    커스텀 위젯 예시
+                </div>
+                <div class="step-status status-pending" id="status-6">
+                    <span>대기 중</span>
+                </div>
+            </div>
+            <div class="step-content">
+                JavaScript 방식에서 title, colors 등의 옵션을 커스터마이징한 위젯 예시입니다.
+            </div>
+            <div class="step-result" id="result-6" style="display: none;"></div>
+            <div class="widget-preview" id="widget-custom-preview" style="display: none;">
+                <h3>🎨 커스텀 위젯 예시</h3>
+                <p style="color: #4a5568; margin-bottom: 20px;">커스터마이징된 1년 위젯입니다. JavaScript 방식에서 title,showLegend,colors 옵션을 직접 변경할 수 있습니다.</p>
+                <div class="widget-container-1y" id="widget-custom"></div>
+                <div class="help-text" style="margin-top: 10px;">← 좌우로 스크롤하여 전체 위젯을 확인하세요</div>
+                
+                <h4 style="margin-top: 20px; color: #4a5568; font-size: 16px;">🎨 커스텀 위젯 JavaScript 코드</h4>
+                <div class="code-snippet" id="code-custom">
+                    <button class="copy-button" onclick="copyCode('code-custom-content')">복사</button>
+                    <div id="code-custom-content"></div>
+                </div>
             </div>
         </div>
-
-        <!-- RSS 분석 테스트 -->
-        <div class="test-section">
-            <h2>🔍 RSS 분석 테스트 (프록시 서버)</h2>
-            <div class="test-buttons">
-                <button onclick="testRssAnalysis()">RSS 분석 테스트</button>
-                <button onclick="testProxyServer()">프록시 서버 상태 확인</button>
-            </div>
-            <div id="rss-analysis-result" class="status info">
-                RSS 분석 결과가 여기에 표시됩니다.
-            </div>
+    </div>
         </div>
     </div>
 
@@ -305,200 +653,530 @@
     <script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"></script>
     
     <script>
-        let currentWidgets = {
-            threeMonth: null,
-            yearly: null
-        };
+        let currentBlogUrl = '';
+        let currentRssUrl = '';
+        let testProgress = 0;
         
-        // RSS URL 설정 함수
-        function setRssUrl(url) {
-            document.getElementById('rss-url-input').value = url;
-            updateWidgets();
+        // 예시 URL 설정
+        function setExampleUrl(url) {
+            document.getElementById('blog-url').value = url;
         }
         
-        // 위젯 업데이트 함수
-        function updateWidgets() {
-            const rssUrl = document.getElementById('rss-url-input').value;
-            const title = document.getElementById('widget-title-input').value;
+        // 테스트 시작
+        async function startTest() {
+            const blogUrl = document.getElementById('blog-url').value.trim();
             
-            if (!rssUrl) {
-                alert('RSS URL을 입력해주세요.');
+            if (!blogUrl) {
+                alert('블로그 주소를 입력해주세요.');
                 return;
             }
             
-            // 기존 위젯 제거
-            destroyCurrentWidgets();
-            
-            // 3개월 버전 위젯 생성
-            const threeMonthContainer = document.getElementById('three-month-widget');
-            threeMonthContainer.innerHTML = '';
-            threeMonthContainer.setAttribute('data-rss-url', rssUrl);
-            threeMonthContainer.setAttribute('data-title', title);
-            
-            if (typeof GradenWidget !== 'undefined') {
-                currentWidgets.threeMonth = new GradenWidget(threeMonthContainer, {
-                    rssUrl: rssUrl,
-                    title: title,
-                    showLegend: true,
-                    showFooter: true
-                });
-                updateTestResults('3개월 버전 위젯 생성', '성공');
-            } else {
-                updateTestResults('3개월 버전 위젯 생성', '실패: GradenWidget 클래스 없음');
+            try {
+                new URL(blogUrl);
+            } catch (e) {
+                alert('올바른 URL 형식을 입력해주세요.');
+                return;
             }
             
-            // 1년 버전 위젯 생성
-            const yearlyContainer = document.getElementById('yearly-widget');
-            yearlyContainer.innerHTML = '';
-            yearlyContainer.setAttribute('data-rss-url', rssUrl);
-            yearlyContainer.setAttribute('data-title', title);
+            currentBlogUrl = blogUrl;
+            testProgress = 0;
+            updateProgress(0);
             
-            if (typeof GradenWidget1Y !== 'undefined') {
-                currentWidgets.yearly = new GradenWidget1Y(yearlyContainer, {
-                    rssUrl: rssUrl,
-                    title: title,
-                    showLegend: true,
-                    showFooter: true
-                });
-                updateTestResults('1년 버전 위젯 생성', '성공');
-            } else {
-                updateTestResults('1년 버전 위젯 생성', '실패: GradenWidget1Y 클래스 없음');
+            // 모든 단계 초기화
+            for (let i = 1; i <= 6; i++) {
+                resetStep(i);
             }
             
-            // 코드 블록 업데이트
-            updateCodeBlocks(rssUrl, title);
+            // 단계별 테스트 실행
+            await runStep1();
         }
         
-        // 기존 위젯 제거
-        function destroyCurrentWidgets() {
-            if (currentWidgets.threeMonth && currentWidgets.threeMonth.destroy) {
-                currentWidgets.threeMonth.destroy();
-                currentWidgets.threeMonth = null;
+        // 단계 초기화
+        function resetStep(stepNum) {
+            const step = document.getElementById(`step-${stepNum}`);
+            const status = document.getElementById(`status-${stepNum}`);
+            const result = document.getElementById(`result-${stepNum}`);
+            
+            if (step) step.className = 'test-step';
+            if (status) {
+                status.className = 'step-status status-pending';
+                status.innerHTML = '<span>대기 중</span>';
             }
-            if (currentWidgets.yearly && currentWidgets.yearly.destroy) {
-                currentWidgets.yearly.destroy();
-                currentWidgets.yearly = null;
+            if (result) result.style.display = 'none';
+            
+            // 5단계인 경우 완료 메시지와 위젯 미리보기 숨기기
+            if (stepNum === 5) {
+                const completionMessage = document.getElementById('completion-message');
+                const widgetPreview = document.getElementById('widget-preview');
+                if (completionMessage) {
+                    completionMessage.style.display = 'none';
+                }
+                if (widgetPreview) {
+                    widgetPreview.style.display = 'none';
+                }
+            }
+            
+            // 6단계인 경우 커스텀 위젯 미리보기 숨기기
+            if (stepNum === 6) {
+                const widgetCustomPreview = document.getElementById('widget-custom-preview');
+                if (widgetCustomPreview) {
+                    widgetCustomPreview.style.display = 'none';
+                }
             }
         }
         
-        // 코드 블록 업데이트
-        function updateCodeBlocks(rssUrl, title) {
-            const codeBlocks = document.querySelectorAll('.code-block');
-            codeBlocks.forEach(block => {
-                let html = block.innerHTML;
-                html = html.replace(/YOUR_RSS_URL/g, rssUrl);
-                html = html.replace(/YOUR_TITLE/g, title);
-                block.innerHTML = html;
+        // 단계 상태 업데이트
+        function updateStepStatus(stepNum, status, message) {
+            const step = document.getElementById(`step-${stepNum}`);
+            const statusEl = document.getElementById(`status-${stepNum}`);
+            const resultEl = document.getElementById(`result-${stepNum}`);
+            
+            if (!step || !statusEl || !resultEl) {
+                console.error(`단계 ${stepNum}의 DOM 요소를 찾을 수 없습니다:`, { step, statusEl, resultEl });
+                return;
+            }
+            
+            // 단계 클래스 업데이트
+            step.className = `test-step ${status}`;
+            
+            // 상태 업데이트
+            switch (status) {
+                case 'testing':
+                    statusEl.className = 'step-status status-testing';
+                    statusEl.innerHTML = '<span>⚡⌛️ 테스트 중<span class="loading-typing"></span></span>';
+                    break;
+                case 'completed':
+                    statusEl.className = 'step-status status-success';
+                    statusEl.innerHTML = '<span>✅ 완료</span>';
+                                         testProgress = stepNum * (100/6);
+                    updateProgress(testProgress);
+                    break;
+                case 'error':
+                    statusEl.className = 'step-status status-error';
+                    statusEl.innerHTML = '<span>❌ 실패</span>';
+                    break;
+            }
+            
+            // 결과 메시지 표시
+            if (message) {
+                resultEl.innerHTML = message;
+                resultEl.style.display = 'block';
+            }
+        }
+        
+        // 진행률 업데이트
+        function updateProgress(percent) {
+            document.getElementById('progress-fill').style.width = percent + '%';
+        }
+        
+        // 1단계: RSS 피드 URL 확인
+        async function runStep1() {
+            updateStepStatus(1, 'testing');
+            
+            try {
+                // 일반적인 RSS 피드 URL 패턴들 시도
+                const rssPatterns = [
+                    '/rss',
+                    '/feed',
+                    '/atom.xml',
+                    '/rss.xml',
+                    '/feed.xml'
+                ];
+                
+                let foundRss = null;
+                const baseUrl = currentBlogUrl.replace(/\/$/, '');
+                
+                for (const pattern of rssPatterns) {
+                    const rssUrl = baseUrl + pattern;
+                    try {
+                                                 const response = await fetch(`https://blog-graden.vercel.app/proxy/rss?url=${encodeURIComponent(rssUrl)}`);
+                        if (response.ok) {
+                            const content = await response.text();
+                            if (content.includes('<rss') || content.includes('<feed')) {
+                                foundRss = rssUrl;
+                                break;
+                            }
+                        }
+                    } catch (e) {
+                        // 계속 시도
+                    }
+                }
+                
+                                 if (foundRss) {
+                     currentRssUrl = foundRss;
+                     updateStepStatus(1, 'completed', `<div class="result-success">✅ RSS 피드 확인 성공!<br>블로그에서 게시물 정보를 정상적으로 가져올 수 있습니다.</div>`);
+                     setTimeout(() => runStep2(), 1000);
+                 } else {
+                     const checkedUrls = rssPatterns.map(p => `<a href="${baseUrl + p}" target="_blank" style="color: #0969da; ">${baseUrl + p}</a>`).join('<br>');
+                     updateStepStatus(1, 'error', `<div class="result-error">❌ RSS 피드를 찾을 수 없습니다.<br>다음 URL들을 확인했습니다:<br>${checkedUrls}</div>`);
+                 }
+                
+            } catch (error) {
+                updateStepStatus(1, 'error', `<div class="result-error">❌ 오류 발생: ${error.message}</div>`);
+            }
+        }
+        
+                // 2단계: 프록시 서버 상태 및 요청 확인
+        async function runStep2() {
+            updateStepStatus(2, 'testing');
+            
+            let resultMessage = '';
+            let allSuccess = true;
+            
+            // 1) 프록시 서버 상태 확인
+            try {
+                const healthResponse = await fetch('https://blog-graden.vercel.app/health');
+                
+                                 const healthUrl = 'https://blog-graden.vercel.app/health';
+                 if (healthResponse.ok) {
+                     const health = await healthResponse.json();
+                     resultMessage += `<div class="result-success" style="margin-bottom: 15px;">
+                         <strong>✅ 프록시 서버 상태 확인 성공!</strong><br>
+                         프록시 서버가 정상적으로 작동하고 있습니다.
+                     </div>`;
+                 } else {
+                     resultMessage += `<div class="result-error" style="margin-bottom: 15px;">
+                         <strong>❌ 프록시 서버 상태 확인 실패!</strong><br>
+                         <strong>응답 오류:</strong> ${healthResponse.status}<br>
+                         <strong>API URL:</strong> <a href="${healthUrl}" target="_blank" style="color: #0969da; ">${healthUrl}</a>
+                     </div>`;
+                     allSuccess = false;
+                 }
+            } catch (error) {
+                resultMessage += `<div class="result-error" style="margin-bottom: 15px;">
+                    <strong>❌ 프록시 서버 상태 확인 실패!</strong><br>
+                    <strong>연결 오류:</strong> ${error.message}
+                </div>`;
+                allSuccess = false;
+            }
+            
+                         // 2) 프록시 서버 요청 테스트
+             try {
+                 const proxyUrl = `https://blog-graden.vercel.app/proxy/rss?url=${encodeURIComponent(currentRssUrl)}`;
+                 const proxyResponse = await fetch(proxyUrl);
+                 
+                 if (proxyResponse.ok) {
+                     const content = await proxyResponse.text();
+                     const contentLength = content.length;
+                     resultMessage += `<div class="result-success">
+                         <strong>✅ 프록시 서버 요청 테스트 성공!</strong><br>
+                         RSS 데이터를 성공적으로 가져왔습니다. (${contentLength.toLocaleString()} bytes)
+                     </div>`;
+                 } else {
+                     resultMessage += `<div class="result-error">
+                         <strong>❌ 프록시 서버 요청 테스트 실패!</strong><br>
+                         <strong>RSS 데이터 가져오기 실패:</strong> ${proxyResponse.status}<br>
+                         <strong>API URL:</strong> <a href="${proxyUrl}" target="_blank" style="color: #0969da; ">${proxyUrl}</a>
+                     </div>`;
+                     allSuccess = false;
+                 }
+             } catch (error) {
+                 const proxyUrl = `https://blog-graden.vercel.app/proxy/rss?url=${encodeURIComponent(currentRssUrl)}`;
+                 resultMessage += `<div class="result-error">
+                     <strong>❌ 프록시 서버 요청 테스트 실패!</strong><br>
+                     <strong>프록시 요청 실패:</strong> ${error.message}<br>
+                     <strong>API URL:</strong> <a href="${proxyUrl}" target="_blank" style="color: #0969da; ">${proxyUrl}</a>
+                 </div>`;
+                 allSuccess = false;
+             }
+            
+            // 결과 표시
+            if (allSuccess) {
+                updateStepStatus(2, 'completed', resultMessage);
+                setTimeout(() => runStep3(), 1000);
+            } else {
+                updateStepStatus(2, 'error', resultMessage);
+            }
+        }
+        
+                // 3단계: RSS 분석 서비스 확인
+        async function runStep3() {
+            updateStepStatus(3, 'testing');
+            
+            try {
+                const analyzeUrl = `https://blog-graden.vercel.app/analyze/rss?url=${encodeURIComponent(currentRssUrl)}`;
+                const response = await fetch(analyzeUrl);
+                
+                if (response.ok) {
+                    const dateCounts = await response.json();
+                    const totalPosts = Object.values(dateCounts).reduce((sum, count) => sum + count, 0);
+                    const dateCount = Object.keys(dateCounts).length;
+                    const recentActivity = Object.keys(dateCounts).sort().pop() || '없음';
+                    
+                    updateStepStatus(3, 'completed', `<div class="result-success">✅ RSS 분석이 완료되었습니다!<br><strong>총 게시물:</strong> ${totalPosts}개<br><strong>활동 날짜:</strong> ${dateCount}일<br><strong>최근 활동:</strong> ${recentActivity}</div>`);
+                    setTimeout(() => runStep4(), 1000);
+                } else {
+                    updateStepStatus(3, 'error', `<div class="result-error">❌ RSS 분석 실패: ${response.status}<br><strong>API URL:</strong> <a href="${analyzeUrl}" target="_blank" style="color: #0969da;">${analyzeUrl}</a></div>`);
+                }
+                
+            } catch (error) {
+                const analyzeUrl = `https://blog-graden.vercel.app/analyze/rss?url=${encodeURIComponent(currentRssUrl)}`;
+                updateStepStatus(3, 'error', `<div class="result-error">❌ RSS 분석 오류: ${error.message}<br><strong>API URL:</strong> <a href="${analyzeUrl}" target="_blank" style="color: #0969da;">${analyzeUrl}</a></div>`);
+            }
+        }
+        
+        // 4단계: CDN 로드 상태 확인
+        async function runStep4() {
+            updateStepStatus(4, 'testing');
+            
+            let checkCount = 0;
+            const maxChecks = 10; // 최대 5초간 체크
+            
+            const checkCDN = () => {
+                checkCount++;
+                
+                                 if (typeof GradenWidget !== 'undefined' && typeof GradenWidget1Y !== 'undefined') {
+                     const cdn3mUrl = 'https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js';
+                     const cdn1yUrl = 'https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js';
+                     
+                     updateStepStatus(4, 'completed', `<div class="result-success">✅ CDN 로드 성공!<br>모든 위젯 라이브러리가 정상적으로 로드되었습니다.<br><br><strong><br><strong>3개월 위젯</strong><br><div style="background: #1a202c; color: #e2e8f0; padding: 12px; border-radius: 6px; font-family: 'SFMono-Regular', Consolas, monospace; font-size: 14px; margin: 8px 0; position: relative;"><span style="user-select: all;">&lt;script src="${cdn3mUrl}"&gt;&lt;/script&gt;</span></div><br><strong>1년 위젯</strong><br><div style="background: #1a202c; color: #e2e8f0; padding: 12px; border-radius: 6px; font-family: 'SFMono-Regular', Consolas, monospace; font-size: 14px; margin: 8px 0; position: relative;"><span style="user-select: all;">&lt;script src="${cdn1yUrl}"&gt;&lt;/script&gt;</span></div></div>`);
+                     setTimeout(() => runStep5(), 1000);
+                 } else if (checkCount < maxChecks) {
+                     setTimeout(checkCDN, 500);
+                 } else {
+                     const gradenStatus = typeof GradenWidget !== 'undefined' ? '로드됨' : '로드 실패';
+                     const graden1YStatus = typeof GradenWidget1Y !== 'undefined' ? '로드됨' : '로드 실패';
+                     const cdn3mUrl = 'https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js';
+                     const cdn1yUrl = 'https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js';
+                     
+                     updateStepStatus(4, 'error', `<div class="result-error">❌ CDN 로드 실패!<br><strong>3개월 위젯:</strong> GradenWidget ${gradenStatus}<br><strong>1년 위젯:</strong> GradenWidget1Y ${graden1YStatus}<br><strong>3개월 CDN URL:</strong> <a href="${cdn3mUrl}" target="_blank" style="color: #0969da; ">${cdn3mUrl}</a><br><strong>1년 CDN URL:</strong> <a href="${cdn1yUrl}" target="_blank" style="color: #0969da; ">${cdn1yUrl}</a><br>네트워크 연결을 확인해주세요.</div>`);
+                 }
+            };
+            
+            checkCDN();
+        }
+        
+        // 5단계: 위젯 미리보기
+        async function runStep5() {
+            updateStepStatus(5, 'testing');
+            
+            try {
+                // CDN 로드 상태 재확인
+                if (typeof GradenWidget === 'undefined' || typeof GradenWidget1Y === 'undefined') {
+                    throw new Error('위젯 클래스가 로드되지 않았습니다. CDN 로드를 다시 확인해주세요.');
+                }
+                
+                // RSS URL 확인
+                if (!currentRssUrl) {
+                    throw new Error('RSS URL이 설정되지 않았습니다.');
+                }
+                
+                // 위젯 미리보기 섹션 표시
+                const widgetPreview = document.getElementById('widget-preview');
+                if (widgetPreview) {
+                    widgetPreview.style.display = 'block';
+                } else {
+                    throw new Error('widget-preview 요소를 찾을 수 없습니다.');
+                }
+                
+                // 3개월 위젯 생성
+                const widget3m = document.getElementById('widget-3m');
+                if (!widget3m) {
+                    throw new Error('widget-3m 요소를 찾을 수 없습니다.');
+                }
+                widget3m.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">3개월 위젯 로딩 중...</div>';
+                
+                try {
+                    console.log('3개월 위젯 생성 시도:', { rssUrl: currentRssUrl, blogUrl: currentBlogUrl });
+                    new GradenWidget(widget3m, {
+                        rssUrl: currentRssUrl,
+                        title: `활동 기록`,
+                        showLegend: true,
+                        showFooter: true
+                    });
+                    console.log('3개월 위젯 생성 성공');
+                } catch (widgetError) {
+                    console.error('3개월 위젯 생성 실패:', widgetError);
+                    widget3m.innerHTML = `<div style="color: #e53e3e; padding: 20px; text-align: center;">3개월 위젯 생성 실패: ${widgetError.message}</div>`;
+                }
+                
+                // 1년 위젯 생성
+                const widget1y = document.getElementById('widget-1y');
+                if (!widget1y) {
+                    throw new Error('widget-1y 요소를 찾을 수 없습니다.');
+                }
+                widget1y.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">1년 위젯 로딩 중...</div>';
+                
+                try {
+                    console.log('1년 위젯 생성 시도:', { rssUrl: currentRssUrl, blogUrl: currentBlogUrl });
+                    new GradenWidget1Y(widget1y, {
+                        rssUrl: currentRssUrl,
+                        title: `1년 활동 기록`,
+                        showLegend: true,
+                        showFooter: true
+                    });
+                    console.log('1년 위젯 생성 성공');
+                } catch (widgetError) {
+                    console.error('1년 위젯 생성 실패:', widgetError);
+                    widget1y.innerHTML = `<div style="color: #e53e3e; padding: 20px; text-align: center;">1년 위젯 생성 실패: ${widgetError.message}</div>`;
+                }
+
+                                                
+                // 코드 스니펫 생성
+                generateCodeSnippets();
+                
+                // 완료 메시지 표시
+                const completionMessage = document.getElementById('completion-message');
+                if (completionMessage) {
+                    completionMessage.style.display = 'block';
+                } else {
+                    console.warn('completion-message 요소를 찾을 수 없습니다.');
+                }
+                updateStepStatus(5, 'completed', '');
+                setTimeout(() => runStep6(), 1000);
+
+            } catch (error) {
+                updateStepStatus(5, 'error', `<div class="result-error">❌ 위젯 생성 실패: ${error.message}<br><strong>현재 상태:</strong><br>- RSS URL: ${currentRssUrl || '없음'}<br>- GradenWidget: ${typeof GradenWidget !== 'undefined' ? '로드됨' : '로드 안됨'}<br>- GradenWidget1Y: ${typeof GradenWidget1Y !== 'undefined' ? '로드됨' : '로드 안됨'}</div>`);
+            }
+        }
+        
+        // 6단계: 커스텀 위젯 예시
+        async function runStep6() {
+            updateStepStatus(6, 'testing');
+            
+            try {
+                // CDN 로드 상태 재확인
+                if (typeof GradenWidget1Y === 'undefined') {
+                    throw new Error('GradenWidget1Y 클래스가 로드되지 않았습니다.');
+                }
+                
+                // RSS URL 확인
+                if (!currentRssUrl) {
+                    throw new Error('RSS URL이 설정되지 않았습니다.');
+                }
+                
+                // 커스텀 위젯 미리보기 섹션 표시
+                const widgetCustomPreview = document.getElementById('widget-custom-preview');
+                if (widgetCustomPreview) {
+                    widgetCustomPreview.style.display = 'block';
+                } else {
+                    throw new Error('widget-custom-preview 요소를 찾을 수 없습니다.');
+                }
+                
+                // 커스텀 색상 위젯 생성
+                const widgetCustom = document.getElementById('widget-custom');
+                if (!widgetCustom) {
+                    throw new Error('widget-custom 요소를 찾을 수 없습니다.');
+                }
+                widgetCustom.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">커스텀 위젯 로딩 중...</div>';
+                
+                try {
+                    console.log('커스텀 위젯 생성 시도:', { rssUrl: currentRssUrl, blogUrl: currentBlogUrl });
+                    new GradenWidget1Y(widgetCustom, {
+                        rssUrl: currentRssUrl,
+                        title: `블로그 포도`,
+                        showLegend: true,
+                        colors: {
+                            0: '#ede9fe',  
+                            1: '#c4b5fd', 
+                            2: '#a99be9', 
+                            3: '#7c3aed',  
+                            4: '#4c1d95'  
+                        }
+                    });
+                    console.log('커스텀 위젯 생성 성공');
+                } catch (widgetError) {
+                    console.error('커스텀 위젯 생성 실패:', widgetError);
+                    widgetCustom.innerHTML = `<div style="color: #e53e3e; padding: 20px; text-align: center;">커스텀 위젯 생성 실패: ${widgetError.message}</div>`;
+                }
+                
+                updateStepStatus(6, 'completed', '');
+
+            } catch (error) {
+                updateStepStatus(6, 'error', `<div class="result-error">❌ 커스텀 위젯 생성 실패: ${error.message}</div>`);
+            }
+        }
+        
+                 // 코드 스니펫 생성
+         function generateCodeSnippets() {
+             // 3개월 위젯 - JavaScript 방식
+             const code3mJs = `<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"><\/script>
+<div id="blog-garden-widget"><\/div>
+<script>
+new GradenWidget(document.getElementById('blog-garden-widget'), {
+    rssUrl: '${currentRssUrl}',
+    title: '활동 기록',
+    showLegend: true,
+    showFooter: true
+});
+<\/script>`;
+
+             // 3개월 위젯 - 데이터 속성 방식
+             const code3mData = `<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget.js"><\/script>
+<div data-graden-widget
+     data-rss-url="${currentRssUrl}"
+     data-title="활동 기록"
+     data-show-legend="true"
+     data-show-footer="true">
+</div>`;
+
+             // 1년 위젯 - JavaScript 방식
+             const code1yJs = `<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"><\/script>
+<div id="blog-garden-widget-1y"><\/div>
+<script>
+new GradenWidget1Y(document.getElementById('blog-garden-widget-1y'), {
+    rssUrl: '${currentRssUrl}',
+    title: '1년 활동 기록',
+    showLegend: true,
+    showFooter: true
+});
+<\/script>`;
+
+             // 1년 위젯 - 데이터 속성 방식
+             const code1yData = `<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"><\/script>
+<div data-graden-widget-1y
+     data-rss-url="${currentRssUrl}"
+     data-title="1년 활동 기록"
+     data-show-legend="true"
+     data-show-footer="true">
+</div>`;
+
+             // 커스텀 색상 위젯 코드
+             const codeCustom = `<script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"><\/script>
+<div id="blog-garden-widget-1y"><\/div>
+<script>
+new GradenWidget1Y(document.getElementById('blog-garden-widget-1y'), {
+    rssUrl: '${currentRssUrl}',
+    title: '블로그 포도',
+    showLegend: true,
+    showFooter: true,
+    colors: {
+        0: '#ede9fe',  
+        1: '#c4b5fd', 
+        2: '#a99be9',  
+        3: '#7c3aed',  
+        4: '#4c1d95'  
+    }
+});
+<\/script>`;
+             
+             // 코드 스니펫 적용
+             document.getElementById('code-3m-js-content').textContent = code3mJs;
+             document.getElementById('code-3m-data-content').textContent = code3mData;
+             document.getElementById('code-1y-js-content').textContent = code1yJs;
+             document.getElementById('code-1y-data-content').textContent = code1yData;
+             document.getElementById('code-custom-content').textContent = codeCustom;
+         }
+        
+        // 코드 복사
+        function copyCode(elementId) {
+            const code = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('코드가 클립보드에 복사되었습니다!');
+            }).catch(() => {
+                alert('복사에 실패했습니다. 수동으로 복사해주세요.');
             });
         }
         
-        // CDN 로드 상태 확인
+        // 페이지 로드 시 CDN 상태 미리 확인
         window.addEventListener('load', function() {
+            // 5초 후에 CDN 로드 상태를 미리 체크
             setTimeout(() => {
-                if (typeof GradenWidget !== 'undefined' && typeof GradenWidget1Y !== 'undefined') {
-                    document.getElementById('cdn-status').className = 'status success';
-                    document.getElementById('cdn-status').textContent = '✅ CDN 로드 성공! 모든 위젯 클래스를 사용할 수 있습니다.';
-                    updateTestResults('CDN 로드', '성공');
-                    
-                    // 초기 위젯 생성
-                    updateWidgets();
-                } else {
-                    document.getElementById('cdn-status').className = 'status error';
-                    document.getElementById('cdn-status').textContent = '❌ CDN 로드 실패! 일부 위젯 클래스를 찾을 수 없습니다.';
-                    updateTestResults('CDN 로드', '실패');
+                if (typeof GradenWidget === 'undefined' || typeof GradenWidget1Y === 'undefined') {
+                    console.warn('위젯 클래스가 로드되지 않았습니다.');
                 }
-            }, 2000);
+            }, 5000);
         });
-
-        function updateTestResults(test, result) {
-            const resultsDiv = document.getElementById('test-results');
-            const timestamp = new Date().toLocaleTimeString();
-            const newResult = `[${timestamp}] ${test}: ${result}`;
-            
-            if (resultsDiv.textContent.includes('테스트를 진행하면')) {
-                resultsDiv.innerHTML = newResult;
-            } else {
-                resultsDiv.innerHTML += '<br>' + newResult;
-            }
-        }
-
-        // RSS 분석 테스트
-        async function testRssAnalysis() {
-            const resultDiv = document.getElementById('rss-analysis-result');
-            const rssUrl = document.getElementById('rss-url-input').value;
-            
-            if (!rssUrl) {
-                alert('RSS URL을 입력해주세요.');
-                return;
-            }
-            
-            resultDiv.className = 'status info';
-            resultDiv.textContent = 'RSS 분석 중...';
-            
-            try {
-                const response = await fetch(`https://blog-graden.vercel.app/analyze/rss?url=${encodeURIComponent(rssUrl)}`);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const dateCounts = await response.json();
-                
-                resultDiv.className = 'status success';
-                resultDiv.innerHTML = `
-                    <strong>✅ RSS 분석 성공!</strong><br>
-                    <strong>URL:</strong> ${rssUrl}<br>
-                    <strong>날짜별 게시물 수:</strong><br>
-                    <pre style="background: white; padding: 8px; border-radius: 4px; margin-top: 8px;">${JSON.stringify(dateCounts, null, 2)}</pre>
-                `;
-                
-                updateTestResults('RSS 분석', '성공');
-            } catch (error) {
-                resultDiv.className = 'status error';
-                resultDiv.innerHTML = `
-                    <strong>❌ RSS 분석 실패!</strong><br>
-                    <strong>에러:</strong> ${error.message}<br>
-                    <strong>프록시 서버가 실행 중인지 확인해주세요.</strong>
-                `;
-                
-                updateTestResults('RSS 분석', '실패: ' + error.message);
-            }
-        }
-
-        // 프록시 서버 상태 확인
-        async function testProxyServer() {
-            const resultDiv = document.getElementById('rss-analysis-result');
-            resultDiv.className = 'status info';
-            resultDiv.textContent = '프록시 서버 상태 확인 중...';
-            
-            try {
-                const response = await fetch('https://blog-graden.vercel.app/health');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const health = await response.json();
-                
-                resultDiv.className = 'status success';
-                resultDiv.innerHTML = `
-                    <strong>✅ 프록시 서버 정상 작동!</strong><br>
-                    <strong>상태:</strong> ${health.status}<br>
-                    <strong>시간:</strong> ${new Date(health.timestamp).toLocaleString()}
-                `;
-                
-                updateTestResults('프록시 서버 상태', '정상');
-            } catch (error) {
-                resultDiv.className = 'status error';
-                resultDiv.innerHTML = `
-                    <strong>❌ 프록시 서버 연결 실패!</strong><br>
-                    <strong>에러:</strong> ${error.message}<br>
-                    <strong>프록시 서버를 확인해주세요.</strong>
-                `;
-                
-                updateTestResults('프록시 서버 상태', '실패: ' + error.message);
-            }
-        }
     </script>
 </body>
 </html> 

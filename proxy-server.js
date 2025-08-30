@@ -3,6 +3,7 @@ const cors = require('cors');
 const fetch = require('node-fetch');
 const xml2js = require('xml2js');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -12,6 +13,9 @@ app.use(cors({
     origin: '*', // 프로덕션에서는 특정 도메인만 허용하는 것이 좋습니다
     credentials: true
 }));
+
+// 정적 파일 서빙 (HTML, JS 파일들)
+app.use(express.static('.'));
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15분
@@ -132,6 +136,11 @@ app.get('/analyze/rss', async (req, res) => {
 // 헬스체크
 app.get('/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// 홈페이지 라우트 - cdn-test.html을 기본 페이지로 설정
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cdn-test.html'));
 });
 
 // 환경 변수로 포트 설정

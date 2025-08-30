@@ -181,14 +181,16 @@
     class GradenWidget {
         constructor(container, options = {}) {
             this.container = typeof container === 'string' ? document.querySelector(container) : container;
-            this.options = {
+            
+            // 기본 옵션 설정
+            const defaultOptions = {
                 rssUrl: 'https://pearlluck.tistory.com/rss',
                 title: '활동 기록',
                 updateInterval: 24 * 60 * 60 * 1000, // 24시간
                 showLegend: true,
                 showFooter: true,
                 proxyUrl: 'https://blog-graden.vercel.app', // 프록시 서버 URL
-                colors: options.colors || {
+                colors: {
                     0: '#ebedef',
                     1: '#9be9a8',
                     2: '#40c463',
@@ -196,6 +198,14 @@
                     4: '#216e39'
                 }
             };
+            
+            // 사용자 옵션과 기본 옵션 병합
+            this.options = Object.assign({}, defaultOptions, options);
+            
+            // colors 옵션 별도 처리 (깊은 병합)
+            if (options.colors) {
+                this.options.colors = Object.assign({}, defaultOptions.colors, options.colors);
+            }
 
             this.data = {};
             this.weeks = [];
