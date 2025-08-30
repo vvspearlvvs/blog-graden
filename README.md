@@ -26,10 +26,11 @@ GitHub 스타일의 블로그 활동 시각화 위젯입니다. RSS 피드를 �
 ```
 
 ### 1년 버전 위젯 (html)
+```html
 <script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"></script>
 <div data-graden-widget-1y data-rss-url="[블로그 주소URL]/rss">
 </div>
-
+```
 ## 🎨 커스텀 사용법
 <!-- 티스토리 관리자 → 꾸미기 → HTML 편집 -->
 ### 3개월 버전 위젯 (JavaScript)
@@ -46,6 +47,7 @@ new GradenWidget(document.getElementById('blog-garden-widget'), {
 ```
 
 ### 1년 버전 위젯 (JavaScript)
+```html
 <script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"></script>
 <div id="blog-garden-widget-1y"></div>
 <script>
@@ -55,11 +57,12 @@ new GradenWidget1Y(document.getElementById('blog-garden-widget-1y'), {
     showLegend: true,
 });
 </script>
-
+```
 
 ## 🎨 커스텀 설정 (포도 스타일 예시)
 
 ### 3개월 버전 위젯 (JavaScript)
+```html
 <script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-3m.js"></script>
 <div id="blog-garden-widget-3m"></div>
 <script>
@@ -76,8 +79,9 @@ new GradenWidget3M(document.getElementById('blog-garden-widget-3m'), {
     }
 });
 </script>
-
+```
 ### 1년 버전 위젯 (JavaScript)
+```html
 <script src="https://unpkg.com/blog-garden-widget@latest/blog-garden-widget-1y.js"></script>
 <div id="blog-garden-widget-1y"></div>
 <script>
@@ -94,7 +98,7 @@ new GradenWidget1Y(document.getElementById('blog-garden-widget-1y'), {
     }
 });
 </script>
-
+```
 ## 🔍 제약 조건
 
 ### 지원 브라우저
